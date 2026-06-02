@@ -421,7 +421,9 @@ if response.tool_calls:
 python3 --version
 ```
 
-如果能输出版本号（如 `Python 3.10.x`），就说明已经有了。如果没有，需要先去 [python.org](https://www.python.org/downloads/) 下载安装。
+如果能输出版本号（如 `Python 3.11.x`），就说明已经有了。如果没有，需要先去 [python.org](https://www.python.org/downloads/) 下载安装。
+
+> ⚠️ 本课程后续会用到 `pyseekdb`，它要求 **Python ≥ 3.11**，请确保你的 Python 版本不低于 3.11，否则安装会失败。
 
 
 
