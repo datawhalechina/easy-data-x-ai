@@ -42,9 +42,15 @@ SILICONFLOW_API_KEY=your_siliconflow_api_key_here
 DASHSCOPE_API_KEY=your_dashscope_api_key_here
 ```
 
+配置加载优先级为：`code/.env` 优先；如果不存在，则读取项目根目录下的 `.env`。如果保留 `.env.example` 中的占位符，程序会在发起真实 API 请求前提示对应的 API Key 尚未配置。
+
 ### 3. 运行示例
 
 ```bash
+# 可以在 code 目录下运行
+python D1/d1_1_base.py
+
+# 也可以进入章节目录运行
 cd D1
 python d1_1_base.py
 ```
@@ -55,6 +61,7 @@ python d1_1_base.py
 
 - `Config.get_siliconflow_config()` - 获取 SiliconFlow API 配置
 - `Config.get_dashscope_config()` - 获取阿里云 DashScope API 配置
+- `Config.require_api_key()` - 在示例代码发起真实请求前检查 API Key，避免占位符被误当作真实配置
 
 ## 说明
 
