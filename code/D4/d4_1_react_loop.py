@@ -1,5 +1,6 @@
 import sys
-sys.path.append('..')
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from config import Config
 import json
 from openai import OpenAI
@@ -20,7 +21,7 @@ from openai import OpenAI
 # ---------- 1. 初始化 LLM 客户端 ----------
 
 client = OpenAI(
-    api_key=Config.SILICONFLOW_API_KEY,
+    api_key=Config.require_api_key("SILICONFLOW_API_KEY"),
     base_url=Config.SILICONFLOW_BASE_URL,
 )
 MODEL = "deepseek-ai/DeepSeek-V3"

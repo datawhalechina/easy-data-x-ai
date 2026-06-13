@@ -1,5 +1,6 @@
 import sys
-sys.path.append('..')
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from config import Config
 import pyseekdb
 import json
@@ -31,7 +32,7 @@ collection = db.get_collection(collection_name)
 print(f">>> 已连接知识库：{collection_name}，共 {collection.count()} 条文档\n")
 
 client = OpenAI(
-    api_key=Config.SILICONFLOW_API_KEY,
+    api_key=Config.require_api_key("SILICONFLOW_API_KEY"),
     base_url=Config.SILICONFLOW_BASE_URL,
 )
 MODEL = "deepseek-ai/DeepSeek-V3"

@@ -440,7 +440,7 @@ pip3 install langchain-openai
 ### 3. 填入你的 API Key
 在[硅基流动](https://www.siliconflow.cn/)注册一个账号，并获取你的 API Key，用于进行测试。
 
-在运行代码前，需要先把每个 .py 文件中的 `YOUR_API_KEY` 替换成你在[硅基流动](https://www.siliconflow.cn/)获取的真实 API Key。
+在运行代码前，需要先复制 `code/.env.example` 为 `code/.env`，并把其中的 `SILICONFLOW_API_KEY` 替换成你在[硅基流动](https://www.siliconflow.cn/)获取的真实 API Key。示例代码会通过 `config.py` 统一读取配置，不需要在每个 `.py` 文件中单独填写 Key。
 
 ### 4. 运行本期课程中涉及到的 d1_1 ~ d1_4 的代码
 ```plain
@@ -541,7 +541,7 @@ llm = init_chat_model(
 pip3 install -U langchain langgraph
 ```
 
-填入你的百炼 API Key 后，运行：
+在 `.env` 中填入你的百炼 API Key（`DASHSCOPE_API_KEY`）后，运行：
 
 ```plain
 python3 d1_6_agent.py
