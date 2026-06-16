@@ -1,0 +1,63 @@
+name: 📝 内容勘误
+description: 课程正文有错别字、表述不清，或技术描述有误
+title: "[勘误] "
+labels: ["勘误"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢你帮我们打磨课程内容！🙏
+        小到一个错别字，大到一处技术错误，每一份反馈都很有价值。
+  - type: dropdown
+    id: chapter
+    attributes:
+      label: 所在章节
+      description: 选择问题所在的章节
+      options:
+        - 公共基础篇 F0 — 课前闲聊
+        - 公共基础篇 F1 — 大模型的本质与边界
+        - 公共基础篇 F2 — AI Agent 全景图
+        - 道篇 P1 — AI Agent 场景识别
+        - 道篇 P2 — RAG 产品设计
+        - 道篇 P3 — 记忆系统设计
+        - 道篇 P4 — Skill 与知识管理
+        - 道篇 P5 — 综合案例与度量
+        - 术篇 D1 — 大模型 API 工程化基础
+        - 术篇 D2 — AI 应用的数据层
+        - 术篇 D3 — Agentic RAG 实战
+        - 术篇 D4 — Agent 开发与记忆系统
+        - 术篇 D5 — 课程总结（Skill 到 MCP）
+        - 扩展篇 X1–X5
+        - 示例代码（code/ 目录）
+        - 课程网站 / README（非章节正文）
+        - 其他 / 不确定
+    validations:
+      required: true
+  - type: input
+    id: location
+    attributes:
+      label: 具体位置
+      description: 小节标题、段落开头几个字，或截图链接，方便我们快速定位
+      placeholder: 例如：「P3 三层记忆模型」一节第二段
+  - type: textarea
+    id: problem
+    attributes:
+      label: 问题描述
+      description: 哪里有问题？错别字 / 表述不清 / 技术描述有误？
+      placeholder: 原文写的是……，这里应该是……
+    validations:
+      required: true
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: 建议修改（选填）
+      description: 如果涉及技术性勘误，欢迎附上参考链接或官方文档出处
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: 确认
+      options:
+        - label: 我已搜索过现有 Issue，确认这不是重复反馈
+          required: true
+        - label: （选填）我愿意提 PR 协助修正
+          required: false

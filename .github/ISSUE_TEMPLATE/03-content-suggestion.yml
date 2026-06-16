@@ -1,0 +1,32 @@
+name: 💡 内容 / 改进建议
+description: 希望补充某个主题、调整章节顺序，或对讲法提出改进
+title: "[建议] "
+labels: ["建议"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        欢迎你为课程出谋划策！✨
+        > 涉及较大结构调整（如重写整章、新增扩展篇）的想法，建议先在这里发起讨论，方向聊成熟后再认领或开工。
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: 建议内容
+      description: 你希望补充什么主题、怎么调整，或哪里可以讲得更好？
+      placeholder: 例如：希望在 D3 补充一个多跳问题场景的混合检索对比实验……
+    validations:
+      required: true
+  - type: textarea
+    id: rationale
+    attributes:
+      label: 理由 / 场景（选填）
+      description: 为什么需要这个改进？你在什么场景下遇到了困惑？
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: 确认
+      options:
+        - label: 我已搜索过现有 Issue，确认这不是重复建议
+          required: true
+        - label: （选填）如果方案确定，我愿意认领并提 PR
+          required: false

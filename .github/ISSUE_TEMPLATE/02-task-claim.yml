@@ -1,0 +1,66 @@
+name: 🙋 认领共建任务
+description: 认领「贡献指南」中的共建任务，参与课程共建
+title: "[认领] "
+labels: ["共建任务", "认领中"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        欢迎参与《Easy Data x AI》课程共建！🚀
+        请先阅读 [CONTRIBUTING.md](https://github.com/datawhalechina/easy-data-x-ai/blob/main/CONTRIBUTING.md) 中的「共建任务列表」，
+        在下方填写你要认领的任务。认领后即可开始，完成时提交 PR 并在描述里注明任务编号。
+  - type: dropdown
+    id: task-type
+    attributes:
+      label: 任务类型
+      description: 你认领的任务来自哪一类列表
+      options:
+        - 列表 A — 完善已有章节（#1–#17）
+        - 列表 B — 扩展篇共建（X1–X5）
+        - 列表 C — 工程 / 基建任务（Good First Issue）
+    validations:
+      required: true
+  - type: input
+    id: task-id
+    attributes:
+      label: 任务编号
+      description: 对应贡献指南里的编号
+      placeholder: 例如：A#3 / X1 / C#11
+    validations:
+      required: true
+  - type: input
+    id: github-id
+    attributes:
+      label: 你的 GitHub ID
+      placeholder: 例如：@your-name
+    validations:
+      required: true
+  - type: dropdown
+    id: difficulty
+    attributes:
+      label: 任务难度
+      options:
+        - L1（写作即可）
+        - L2（实验分析）
+        - L3（工程实现）
+        - 不确定
+  - type: textarea
+    id: plan
+    attributes:
+      label: 你的思路 / 计划（选填）
+      description: 简单说说你打算怎么做，方便维护者和你对齐方向
+      placeholder: 例如：打算补充三种记忆冲突解决策略的对比表 + 一个最小可运行示例……
+  - type: input
+    id: eta
+    attributes:
+      label: 预计完成时间（选填）
+      placeholder: 例如：2 周内
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: 确认
+      options:
+        - label: 我已阅读 CONTRIBUTING.md，并确认该任务尚未被他人认领
+          required: true
+        - label: 我了解完成一条任务即提交一个 PR，并在 PR 描述中注明任务编号
+          required: true

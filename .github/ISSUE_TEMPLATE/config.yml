@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 📺 社区在线课堂
+    url: https://open.oceanbase.com/course/760
+    about: 配套视频与课程内容，边看边学。
+  - name: 💬 加入课程交流群
+    url: https://github.com/datawhalechina/easy-data-x-ai#关注我们
+    about: 学习中卡住了、想交流？扫码加入 Data x AI 课程交流群。
