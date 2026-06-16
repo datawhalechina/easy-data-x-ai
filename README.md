@@ -1,3 +1,5 @@
+
+
 <h1 align="center">《Easy Data x AI》</h1>
 
 <h2 align="center">（Alpha 内测版，欢迎各位老师参与共建~）</h2>
@@ -11,7 +13,9 @@
   <a href="https://open.oceanbase.com/course/760">社区在线课堂</a>
 </p>
 
----
+<p align="center">
+  <img src="docs/public/images/cover.png" alt="Easy Data x AI" width="100%" />
+</p>
 
 ## 📚 这门课程适合谁？
 
@@ -40,7 +44,7 @@
 
 ## 📖 课程目录
 
-> 💡 **核心理念**：洞察先行，自然跟随。当你看懂了数据，才是真正看懂了 AI 的未来。
+> F 打底 → P 论道（为什么/怎么设计）→ D 习术（怎么动手实现）。
 
 ### 公共基础篇
 
@@ -48,6 +52,8 @@
 | --- | --- |
 | F1 | 大模型的本质与边界 |
 | F2 | AI Agent 的完整图景 |
+
+> F = 公共基础篇，Foundation（基础），F1/F2 是所有人都要先看的入门内容。 
 
 ### 道篇
 
@@ -59,6 +65,10 @@
 | P4 | 把经验变可复用 —— Skill 与知识管理 |
 | P5 | 用数据验证价值 —— 案例与度量 |
 
+> P = 道篇，Product / PM（产品视角，"悟其道"），面向产品决策者、零基础 AI 爱好者，讲设计哲学与判断力。
+
+
+
 ### 术篇
 
 | 课程编号 | 课程标题 |
@@ -69,8 +79,17 @@
 | D4 | 记哪些、忘哪些？—— Agent 记忆系统开发 |
 | D5 | 授 AI 以渔 —— 综合实战，从 Skill 开发到 MCP 标准化 |
 
-### Extra Chapter
+> D = 术篇，Dev / Developer（开发者视角，"用其术"），面向能调 LLM API 的开发者，讲可运行的工程实战。
 
+### Extra Chapter（共建招募中）
+
+| # | 扩展章节标题 | 热点趋势 | 共建入口（对应列表 A） |
+| --- | --- | --- | --- |
+| **X1** | 探究 AI Agent 记忆系统：从遗忘曲线到永久记忆 | AI 记忆 | 多 Agent 记忆冲突解决（→ #1/#2/#3） |
+| **X2** | 多 Skill 给上下文工程带来的麻烦：如何应对 Agent「爆上下文」 | 多 Skill / 上下文工程 | Skill 设计规范（→ #4/#5） |
+| **X3** | 从零到一上手混合检索：AI Native 统一数据基座实战 | Agentic RAG / 混合检索 | 扩充 RAG 评测数据集（→ #11/#12） |
+| **X4** | 海量 AI Agent 多模数据降本：数据湖库登场 | 数据湖库 × AI | 开源「湖到 RAG」教程（→ #14/#15） |
+| **X5** | 由你来定！ | ？？？ | ？？？ |
 
 
 ## 🚀 快速开始
@@ -113,11 +132,11 @@ python3 d1_1_base.py
 
 ## 🤝 参与贡献
 
-- 如果你发现了一些问题，可以提 [Issue](https://github.com/datawhalechina/easy-data-x-ai/issues) 进行反馈
-- 如果你想参与贡献本项目，欢迎提 [Pull Request](https://github.com/datawhalechina/easy-data-x-ai/pulls)
-- 详细的本地预览、目录约定与提交规范，请阅读[贡献指南 CONTRIBUTING.md](CONTRIBUTING.md)
-- 参与共建请遵守[行为准则 CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
-- 欢迎加入课程共建，一起完善内容
+- 如果你发现了一些问题，可以提 [Issue](https://github.com/datawhalechina/easy-data-x-ai/issues) 进行反馈。
+
+- 欢迎加入课程共建，一起完善课程内容。如果您希望参与课程共建，请阅读：[贡献指南 CONTRIBUTING.md](CONTRIBUTING.md)，欢迎提交 [Pull Request](https://github.com/datawhalechina/easy-data-x-ai/pulls)。
+
+- 参与贡献的收获，详见：[贡献指南 CONTRIBUTING.md](CONTRIBUTING.md) 的 “致谢与收获” 部分。
 
 ## 模型算力支持
 

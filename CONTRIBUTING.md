@@ -127,16 +127,17 @@ chore: <工程/基建说明>            # CI、依赖、脚本
 
 ### 列表 B：扩展篇共建（Extra-Chapter X1–X5）
 
-> 在 `docs/extra/` 目录下独立创建、维护新的课程章节。每节都有一个「共建钩子」与列表 A 的任务相呼应，形成「学 → 练 → 共建」的闭环。
-> 扩展篇方向较大，**认领前请先开 Issue 对齐内容大纲**。
+> 在 `docs/extra/` 目录下独立创建、维护新的课程章节。每节都有一个「共建入口」与列表 A 的任务相呼应，形成「学 → 练 → 共建」的闭环。
+>
+> 扩展篇方向较多，**认领前请先开 Issue 对齐内容大纲**。
 
-| # | 扩展课程标题 | 热点趋势 | 关联产品 | 共建钩子（对应列表 A） |
-| --- | --- | --- | --- | --- |
-| **X1** | 探究 AI Agent 记忆系统：从遗忘曲线到永久记忆 | AI 记忆 | PowerMem | 多 Agent 记忆冲突解决（→ #1/#2/#3） |
-| **X2** | 多 Skill 给上下文工程带来的麻烦：如何应对 Agent「爆上下文」 | 多 Skill / 上下文工程 | 结构化管理 Skill / seekdb | Skill 设计规范（→ #4/#5） |
-| **X3** | 从零到一上手混合检索：AI Native 统一数据基座实战 | Agentic RAG / 混合检索 | seekdb Hybrid Search | 扩充 RAG 评测数据集（→ #11/#12） |
-| **X4** | 海量 AI Agent 多模数据降本：数据湖库登场 | 数据湖库 × AI | DataStudio + Lakebase | 开源「湖到 RAG」教程（→ #14/#15） |
-| **X5** | 数据库大赛专题内容 | capstone 综合应用 | seekdb + PowerMem + 混合检索 | 大赛选手提 PR 改进课程 |
+| # | 扩展课程标题 | 热点趋势 | 共建入口（对应列表 A） |
+| --- | --- | --- | --- |
+| **X1** | 探究 AI Agent 记忆系统：从遗忘曲线到永久记忆 | AI 记忆 | 多 Agent 记忆冲突解决（→ #1/#2/#3） |
+| **X2** | 多 Skill 给上下文工程带来的麻烦：如何应对 Agent「爆上下文」 | 多 Skill / 上下文工程 | Skill 设计规范（→ #4/#5） |
+| **X3** | 从零到一上手混合检索：AI Native 统一数据基座实战 | Agentic RAG / 混合检索 | 扩充 RAG 评测数据集（→ #11/#12） |
+| **X4** | 海量 AI Agent 多模数据降本：数据湖库登场 | 数据湖库 × AI | 开源「湖到 RAG」教程（→ #14/#15） |
+| **X5** | 由你来定！ | ？？？ | ？？？ |
 
 ### 列表 C：工程 / 基建任务（Good First Issue）
 
@@ -149,7 +150,6 @@ chore: <工程/基建说明>            # CI、依赖、脚本
 | [#8](https://github.com/datawhalechina/easy-data-x-ai/issues/8) | 示例脚本 `sys.path.append('..')` 从根目录运行会导入失败，改为稳健的路径处理 | L2 |
 | [#9](https://github.com/datawhalechina/easy-data-x-ai/issues/9) | README 补充 Windows PowerShell 命令示例（`cp` / `python3` 等） | L1 |
 | [#10](https://github.com/datawhalechina/easy-data-x-ai/issues/10) | Tool Use 示例只处理首个 tool_call，且 `list(stream)` 聚合不通用，改为通用实现 | L2 |
-| [#11](https://github.com/datawhalechina/easy-data-x-ai/issues/11) | 补齐标准开源文件：LICENSE / CONTRIBUTING.md / CODE_OF_CONDUCT.md | L1 |
 | [#12](https://github.com/datawhalechina/easy-data-x-ai/issues/12) | VitePress 依赖为 alpha 且用 `^` 范围，锁定版本提升构建可复现性 | L2 |
 | [#13](https://github.com/datawhalechina/easy-data-x-ai/issues/13) | 补充 PR/Push 的 CI 校验工作流（docs build / Python 示例语法检查等） | L2 |
 
@@ -179,19 +179,18 @@ chore: <工程/基建说明>            # CI、依赖、脚本
 
 | 档位 | 条件（示例） | 礼品 |
 | --- | --- | --- |
-| 入门 | 合并 1 个有效 PR | OceanBase 定制贴纸 / 徽章 |
-| 进阶 | 合并多个内容/工程 PR | OceanBase 专属马克杯 / 帆布包 |
-| 核心 | 独立完成一节扩展篇（X1–X5） | OceanBase 定制 T 恤 + 全套周边礼盒 |
+| 入门 | 合并 1 个有效的 PR（列表 A / 列表 C） | OceanBase 定制贴纸 / 徽章 |
+| 进阶 | 合并 2 个及以上的内容完善类 PR（列表 A） | OceanBase 专属马克杯 / 帆布包 |
+| 核心 | 独立完成一节扩展篇内容（X1 ~ X5） | OceanBase 定制 T 恤 |
 
 ### 🌟 成长与社区收获
 
-- **电子贡献证书**：由 OceanBase 社区 & Datawhale 联合署名。
 - **课程署名**：扩展篇作者会在课程对应章节页面**正式署名**。
-- **纳入 OceanBase 社区布道师体系**：表现突出的共建者可被推荐为「种子布道师」，获得 OceanBase 官方背书。
+- **纳入 OceanBase 社区布道师体系**：表现突出的共建者可被推荐为「种子布道师」，获得 OceanBase 官方证书。
 - **讲师 / 露出机会**：受邀参与社区直播、线下 Meetup、高校行，输出自己的内容。
 - **优秀贡献者评选**：定期评选季度优秀贡献者，额外礼品 + 社区公众号专访。
-- **职业机会**：优秀贡献者可获得 OceanBase 实习 / 内推推荐。
-- **联合社区礼品**：涉及 LangChain 相关贡献的同学，还可获得 LangChain 中国社区的礼品。
+- **职业机会**：优秀贡献者可获得蚂蚁集团及 OceanBase 实习 / 内推推荐。
+- **联合社区礼品**：根据课程共建的贡献量，还可获得 OceanBase 社区为大家准备的定制礼物，以及 LangChain 中国社区的礼品。
 
 ---
 
