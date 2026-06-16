@@ -91,6 +91,7 @@
 | **X4** | 海量 AI Agent 多模数据降本：数据湖库登场 | 数据湖库 × AI | 开源「湖到 RAG」教程（→ #14/#15） |
 | **X5** | 由你来定！ | ？？？ | ？？？ |
 
+---
 
 ## 🚀 快速开始
 
@@ -130,6 +131,8 @@ cd D1
 python3 d1_1_base.py
 ```
 
+---
+
 ## 🤝 参与贡献
 
 - 如果你发现了一些问题，可以提 [Issue](https://github.com/datawhalechina/easy-data-x-ai/issues) 进行反馈。
@@ -137,6 +140,8 @@ python3 d1_1_base.py
 - 欢迎加入课程共建，一起完善课程内容。如果您希望参与课程共建，请阅读：[贡献指南 CONTRIBUTING.md](CONTRIBUTING.md)，欢迎提交 [Pull Request](https://github.com/datawhalechina/easy-data-x-ai/pulls)。
 
 - 参与贡献的收获，详见：[贡献指南 CONTRIBUTING.md](CONTRIBUTING.md) 的 “致谢与收获” 部分。
+
+---
 
 ## 模型算力支持
 
@@ -158,6 +163,8 @@ python3 d1_1_base.py
 
 - 🎁 **新用户福利**：通过 [课程专属注册链接](https://cloud.siliconflow.cn/i/Fq9zUwPf) 注册并完成实名认证，即可获得 **16 元全平台通用代金券**，可用于平台上百余种模型的调用，足够跑通本课程的全部示例。
 - 🧪 **实验配额补贴池**：用上面的链接注册时，作者也会获得平台返利。这部分返利会**全额回馈给学员**——汇集成一个「实验配额补贴池」：跟着课程做实验、复现示例时如果额度不够用，可以[联系作者](https://space.bilibili.com/3546900567427713)申请额外的算力配额补贴，把福利转回给真正在动手的同学。
+
+---
 
 ## 🧑‍💻 项目维护者
 
@@ -209,10 +216,12 @@ python3 d1_1_base.py
 </table>
 <!-- contributors:end -->
 
+---
+
 ## 关注我们
 <div align=center>
 <p>欢迎扫描下方二维码加入 Data x AI 课程交流群</p>
-<img src="https://raw.githubusercontent.com/datawhalechina/easy-data-x-ai/main/docs/public/images/base_knowledge/F0/F0-20.png" width = "180" height = "180">
+<img src="https://raw.githubusercontent.com/datawhalechina/easy-data-x-ai/main/docs/public/images/base_knowledge/F0/F0-20.png" width = "300" height = "300">
 </div>
 
 ## LICENSE
