@@ -157,7 +157,7 @@ chore: <工程/基建说明>            # CI、依赖、脚本
 
 ## 五、参与方式总览
 
-1. **提 Issue 参与讨论**：先开 Issue 说明你的建议、需求或共建思路（可用下方 Issue 模板）。
+1. **提 Issue 参与讨论**：先开 Issue 说明你的建议、需求或共建思路（在 [New Issue](https://github.com/datawhalechina/easy-data-x-ai/issues/new/choose) 页选择对应的 Issue 模板）。
 2. **认领任务提 PR**：在对应 Issue 下留言认领，在章节文件中调整、完善、补充，完成后提 PR。
 3. **贡献扩展篇**：在 `docs/extra/` 下独立创建新章节（先开 Issue 对齐大纲）。
 
