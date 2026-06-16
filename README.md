@@ -143,6 +143,11 @@ python3 d1_1_base.py
 
 ---
 
+## 友情链接
+由 DataWhale 开源的另一门课程 —— [《Deep Agents 实战》](https://github.com/datawhalechina/deepagents-in-action)，面向想要动手构建 Agent 的开发者，系统讲解虚拟文件系统、任务规划、子 Agent、Skills、Memory 等核心能力。欢迎大家来学习和积极参与共建。
+
+---
+
 ## 模型算力支持
 
 <table>
