@@ -144,7 +144,8 @@ python3 d1_1_base.py
 ---
 
 ## 友情链接
-由 DataWhale 开源的另一门课程 —— [《Deep Agents 实战》](https://github.com/datawhalechina/deepagents-in-action)，面向想要动手构建 Agent 的开发者，系统讲解虚拟文件系统、任务规划、子 Agent、Skills、Memory 等核心能力。欢迎大家来学习和积极参与共建。
+
+本课程开发者 [沧海九粟](https://space.bilibili.com/28357052) 在 DataWhale 又开源的另一门课程 —— [《Deep Agents 实战》](https://github.com/datawhalechina/deepagents-in-action)。面向想要动手构建 Agent 的开发者，系统讲解虚拟文件系统、任务规划、子 Agent、Skills、Memory 等核心能力。欢迎大家来学习和积极参与共建。
 
 ---
 
@@ -176,19 +177,19 @@ python3 d1_1_base.py
 <table>
   <tr>
     <td align="center">
-      <a href="https://github.com/liboyang0730">
-        <img src="https://github.com/liboyang0730.png" width="100px;" alt="liboyang0730"/>
-        <br />
-        <sub><b>Zlatan (liboyang0730)</b></sub>
-      </a>
-      <br />
-      <sub>项目负责人</sub>
-    </td>
-    <td align="center">
       <a href="https://github.com/webup">
         <img src="https://github.com/webup.png" width="100px;" alt="webup"/>
         <br />
         <sub><b>Haili Zhang (webup)</b></sub>
+      </a>
+      <br />
+      <sub>项目维护者</sub>
+    </td>
+    <td align="center">
+      <a href="https://github.com/liboyang0730">
+        <img src="https://github.com/liboyang0730.png" width="100px;" alt="liboyang0730"/>
+        <br />
+        <sub><b>Zlatan (liboyang0730)</b></sub>
       </a>
       <br />
       <sub>项目维护者</sub>
@@ -208,7 +209,7 @@ python3 d1_1_base.py
     <img src="https://avatars.githubusercontent.com/u/13233790?v=4&s=144" width="72" height="72" alt="liboyang0730" style="border-radius:50%;" />
   </a><br />
   <a href="https://github.com/liboyang0730" title="打开 liboyang0730 的 GitHub 主页"><kbd><strong>liboyang073…</strong></kbd></a><br />
-  <sub>73 commits</sub>
+  <sub>74 commits</sub>
 </td>
 <td align="center" valign="top" width="104">
   <a href="https://github.com/hu-qi" title="hu-qi">
