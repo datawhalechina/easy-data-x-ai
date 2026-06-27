@@ -65,6 +65,176 @@ Skill 做的事情，是把这类“怎么做”的知识**显式化、结构化
 
 ![](https://raw.githubusercontent.com/datawhalechina/easy-data-x-ai/main/docs/public/images/pm/P4/01-skill-vs-memory.png)
 
+### Skill 设计规范：像设计 MCP Tool 一样设计 Skill
+
+理解 Skill 是“可以被管理的数据”之后，一个很自然的问题就来了：既然它是数据资产，那它应该怎么写，才方便被检索、被复用、被 Agent 稳定调用？
+
+这里可以借鉴 MCP Tool 的设计思路。
+
+一个 MCP Tool 通常不会只写一段“这是个查询工具”。它会有稳定的工具名、清晰的描述、结构化的输入参数，以及可验证的返回结果。这样 Agent 才能判断：什么时候该用这个工具、调用时要传什么参数、调用失败后该怎么处理。
+
+Skill 也如此。Skill 虽然不是一个可执行函数，但它和 Tool 一样，都会被 Agent “选择”和“调用”。所以一个高质量 Skill 不能只是一篇随手写下来的经验笔记，而应该有相对标准的结构。
+
+最小可用的 Skill，建议至少包含四类信息：
+
+1. **命名：让系统能稳定识别它**
+2. **描述：让 Agent 能判断何时使用它**
+3. **参数或输入范围：让 Agent 知道执行任务时需要收集什么**
+4. **示例：让 Agent 理解正确用法和边界**
+
+#### 1. 命名：稳定、具体、可检索
+
+Skill 的名字相当于 MCP Tool 的 `name`。它不只是给人看的标题，也是系统索引、路由和检索时使用的标识。
+
+好的 Skill 名称应该满足三个原则：
+
+- **稳定**：一旦被项目或团队引用，就不要频繁改名
+- **具体**：能看出任务目标，而不是只写一个大而泛的领域名
+- **机器友好**：尽量使用小写英文、短横线分隔，方便跨系统处理
+
+例如：
+
+```yaml
+name: api-doc-writing
+name: npm-package-release
+name: college-archive-management
+```
+
+不推荐：
+
+```yaml
+name: docs
+name: helper
+name: 我的超强写文档技能
+```
+
+这里的差别和 Tool 命名一样。`archive/search` 比 `doSomething` 更容易被 Agent 理解，也更容易被系统维护。Skill 也是同理，名字越稳定、越贴近任务，后续检索和路由越可靠。
+
+#### 2. 描述：写清触发条件
+
+Skill 的 `description` 很像 MCP Tool 的描述字段。它的核心作用是帮助 Agent 判断：**当前用户请求是否应该加载这个 Skill**。
+
+好的描述应该包含三件事：
+
+- 适用任务：这个 Skill 解决什么类型的问题
+- 触发场景：用户说什么、做什么时应该考虑使用
+- 边界范围：什么情况不应该使用
+
+例如：
+
+```yaml
+description: 当用户需要按团队规范编写或修改 API 文档时使用，适用于接口说明、请求参数、响应示例和错误码整理；不用于生成后端接口代码。
+```
+
+这比下面这种描述更有用：
+
+```yaml
+description: 帮助写 API 文档。
+```
+
+第二种写法太宽。Agent 可能不知道它是用于“写新文档”、还是“检查旧文档”、还是“生成 OpenAPI schema”。描述越模糊，检索和调用就越容易偏。
+
+可以把 `description` 看成 Skill 的“语义入口”。当 Skill 库变大以后，系统很可能先用名称和描述做召回，再决定是否加载正文。因此描述不是装饰，它直接影响 Skill 能不能被找到。
+
+#### 3. 参数：声明任务需要哪些输入
+
+MCP Tool 有明确的 `inputSchema`，告诉 Agent 调用工具时必须传哪些参数、每个参数是什么类型、哪些是必填项。Skill 不一定像 Tool 一样直接执行，但它同样需要说明：完成这个任务时，Agent 应该关注哪些输入。
+
+在 Skill 中，可以用 `inputs`、`required_fields`、`optional_fields`、`constraints` 等字段描述输入范围。
+
+例如：
+
+```yaml
+inputs:
+  required:
+    - endpoint_path
+    - http_method
+    - request_params
+    - response_schema
+  optional:
+    - auth_requirement
+    - error_codes
+    - example_request
+    - example_response
+```
+
+这样 Agent 就知道：如果用户说“帮我写一下这个接口文档”，但没有提供请求参数和响应结构，它不应该直接编造，而应该继续追问或读取相关代码。
+
+参数设计有三个要点：
+
+- **区分必填和可选**：不要把所有信息都写成“最好有”，否则 Agent 不知道什么时候可以继续
+- **说明参数来源**：有些参数来自用户输入，有些来自代码仓库，有些来自工具查询结果
+- **避免把业务实现写进 Skill**：Skill 只说明需要什么信息和何时调用工具，不替代后端校验、权限判断或数据写入
+
+这一点和 MCP Tool 的边界非常像：Tool 的 schema 负责约束输入，但真正的业务规则仍然要在工具或服务端执行。Skill 也一样，它负责约束 Agent 的行为，但不应该承担全部业务逻辑。
+
+#### 4. 示例：用最小样例校准行为
+
+Skill 需要示例，就像 MCP Tool 文档里通常会给出调用样例。示例的作用不是堆材料，而是校准 Agent 对“正确执行方式”的理解。
+
+一个好的 Skill 示例应该尽量短，但要覆盖关键边界：
+
+- 什么样的用户请求会触发这个 Skill
+- Agent 应该如何判断缺失信息
+- 信息足够时应该如何推进
+- 哪些行为是禁止的
+
+例如：
+
+```yaml
+examples:
+  - user: 帮我给 POST /api/orders 写接口文档
+    agent_behavior: 检查是否已有请求参数、响应结构和错误码；缺失时先追问或读取代码，不直接编造字段。
+  - user: 直接生成一个订单接口文档，字段你看着写
+    agent_behavior: 拒绝编造业务字段，说明需要 endpoint、参数来源或代码上下文。
+```
+
+注意，示例不是固定问答脚本。它不要求 Agent 逐字复述，而是提供行为参照。好的示例应该像测试用例一样，帮助我们验证 Skill 是否会在关键场景中稳定工作。
+
+#### 一个推荐的 Skill 模板
+
+综合起来，一个 Skill 可以采用下面这样的结构：
+
+```yaml
+name: api-doc-writing
+description: 当用户需要按团队规范编写或修改 API 文档时使用，适用于接口说明、请求参数、响应示例和错误码整理；不用于生成后端接口代码。
+
+goal:
+  生成结构完整、字段可信、符合团队格式的 API 文档。
+
+inputs:
+  required:
+    - endpoint_path
+    - http_method
+    - request_params
+    - response_schema
+  optional:
+    - auth_requirement
+    - error_codes
+    - example_request
+    - example_response
+
+tools:
+  - code/search
+  - file/read
+  - docs/update
+
+constraints:
+  - 缺少请求参数或响应结构时，先追问或读取代码，不直接编造
+  - 如果工具查询结果和用户描述冲突，先说明冲突并请求确认
+  - 不修改接口实现代码，只生成或更新文档
+
+examples:
+  - user: 帮我给 POST /api/orders 写接口文档
+    agent_behavior: 先确认接口路径、方法、请求参数和响应结构；缺失时读取代码或追问。
+  - user: 字段你随便补一下
+    agent_behavior: 不编造字段，要求提供代码上下文或业务说明。
+```
+
+这个模板和 MCP Tool 规范的精神是一致的：**用稳定名称做识别，用清晰描述做触发，用结构化参数做约束，用示例校准行为**。
+
+当然，不同平台的 Skill 文件格式可能不一样。有的写在 `SKILL.md`，有的写在 `.cursor/rules/`，有的写进系统提示词。但无论外层格式如何变化，底层都应该尽量保留这四类信息。否则 Skill 就会退化成一段散文：人读着有感觉，Agent 用起来不稳定，系统也很难检索和管理。
+
 ## 第二部分：碎片化困境——当前 Skill 管理的真实现状
 
 了解了 Skill 是什么之后，让我们看看它在实际使用中面临的最大问题。
