@@ -13,7 +13,8 @@ code/
 ├── D2/                # AI 应用的数据层
 ├── D3/                # Agentic RAG 实战
 ├── D4/                # Agent 开发与记忆系统
-└── D5/                # Skill、MCP 与综合项目
+├── D5/                # Skill、MCP 与综合项目
+└── X2/                # 扩展篇：Skill 结构化管理与按需加载
 ```
 
 ## 快速开始

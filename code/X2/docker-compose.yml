@@ -1,0 +1,16 @@
+# X2 课程推荐：macOS / Windows 使用 Docker 启动 seekdb Server
+# 用法: docker compose up -d && python database/check_seekdb.py
+services:
+  seekdb:
+    image: oceanbase/seekdb:latest
+    container_name: x2-seekdb
+    ports:
+      - "2881:2881"
+      - "2886:2886"
+    volumes:
+      - seekdb-data:/var/lib/oceanbase
+    environment:
+      SEEKDB_DATABASE: x2_skills
+
+volumes:
+  seekdb-data:

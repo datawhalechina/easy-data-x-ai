@@ -13,3 +13,7 @@ pyseekdb>=1.2.0.post1
 
 # Agent 相关（可选，用于 d1_6）
 langgraph>=1.1.6
+
+# X2 Skill 管理（需要 Python 3.11+ 与 pyseekdb）
+pyseekdb>=1.2.0.post1
+PyYAML>=5.4.1
