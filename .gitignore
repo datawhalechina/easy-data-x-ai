@@ -15,6 +15,10 @@ docs/.vitepress/cache
 # macOS 系统文件
 .DS_Store
 
+# Python 虚拟环境（本地 pip install 生成，勿提交）
+**/.venv/
+.venv/
+
 # Python 缓存
 __pycache__/
 *.py[cod]
