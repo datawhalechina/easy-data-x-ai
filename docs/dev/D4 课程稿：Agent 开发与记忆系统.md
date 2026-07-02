@@ -525,7 +525,7 @@ while True:
 - **LangGraph 记忆架构**：LangGraph 的 Checkpointer 和 Memory Store 实现，是当前主流 Agent 框架中记忆管理的工程参考
 - **LOCOMO Benchmark**：[github.com/Shopify/locomo](https://github.com/Shopify/locomo)，Shopify 开发的 Agent 长期记忆评估基准，用于衡量记忆系统的检索准确率
 
-> **下一期预告**：D5 · Skill、MCP 与课程总结——今天讲的程序记忆告诉我们 Agent 需要”操作手册”。但当手册越来越多、分散在不同平台时，一个新问题出现了：经验数据的碎片化。D5 我们来解决这个问题，同时用 MCP 把你构建的所有能力变成标准化服务，完成整个 Dev 路径的最后一块拼图。
+> **下一期预告**：D5 · 课程总结——今天讲的程序记忆告诉我们 Agent 需要”操作手册”。但当手册越来越多、分散在不同平台时，一个新问题出现了：经验数据的碎片化。D5 我们来解决这个问题，同时用 MCP 把你构建的所有能力变成标准化服务，完成整个 Dev 路径的最后一块拼图。
 
 ---
 

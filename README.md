@@ -77,7 +77,7 @@
 | D2 | 一个系统搞定 —— 统一 AI Native 数据层实战 |
 | D3 | 实践出真知 —— Agentic RAG 实战 |
 | D4 | 记哪些、忘哪些？—— Agent 记忆系统开发 |
-| D5 | 授 AI 以渔 —— 综合实战，从 Skill 开发到 MCP 标准化 |
+| D5 | 课程总结 |
 
 > D = 术篇，Dev / Developer（开发者视角，"用其术"），面向能调 LLM API 的开发者，讲可运行的工程实战。
 
@@ -211,7 +211,7 @@ python3 d1_1_base.py
     <img src="https://avatars.githubusercontent.com/u/13233790?v=4&s=144" width="72" height="72" alt="liboyang0730" style="border-radius:50%;" />
   </a><br />
   <a href="https://github.com/liboyang0730" title="打开 liboyang0730 的 GitHub 主页"><kbd><strong>liboyang073…</strong></kbd></a><br />
-  <sub>75 commits</sub>
+  <sub>76 commits</sub>
 </td>
 <td align="center" valign="top" width="104">
   <a href="https://github.com/knqiufan" title="knqiufan">

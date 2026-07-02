@@ -6,9 +6,7 @@ index 3f6a1b2..8c9d4e5 100644
 +from collections import Counter
 +
  from mcp.server.fastmcp import FastMCP
- 
  mcp = FastMCP("skill-mcp-demo")
- 
 +
 +RISK_KEYWORDS = {
 +    "eval(": "Avoid eval on untrusted input.",
@@ -63,7 +61,6 @@ index 3f6a1b2..8c9d4e5 100644
 +        "suffixes": suffixes,
 +    }
 +
- 
  @mcp.tool()
  def review_code_diff(
 @@ -18,13 +74,77 @@ def review_code_diff(
@@ -131,30 +128,25 @@ index 3f6a1b2..8c9d4e5 100644
 +            lines.append(f"- **{item['title']}**: {item['detail']}")
 +        finding_sections.append("\n".join(lines))
 +
-     return f"""# Code Review Result
- 
+    return f"""# Code Review Result
  ## Focus
  {focus}
- 
  ## Input Summary
 -Received diff with {len(diff)} characters.
 +- Changed files: {len(files)}
 +- Added lines: {summary["added"]}
 +- Removed lines: {summary["removed"]}
 +- File types: {dict(summary["suffixes"])}
- 
  ## Review Checklist
  1. Correctness
 @@ -34,15 +154,13 @@ def review_code_diff(
  5. Compatibility
  6. Project conventions
- 
  ## Findings
 -- Critical: 暂无，需结合真实 diff 判断
 -- Major: 请检查核心逻辑、边界条件和异常路径
 -- Minor: 请检查命名、重复代码和可读性
 +{chr(10).join(finding_sections)}
- 
  ## Suggested Next Steps
 -1. 补充或更新测试用例。
 -2. 重点检查 diff 中的输入校验、错误处理和兼容性影响。
@@ -163,5 +155,3 @@ index 3f6a1b2..8c9d4e5 100644
 +2. Run the smallest relevant test suite.
 +3. If this is a PR, compare the findings with CI and reviewer comments.
  """
- 
- 

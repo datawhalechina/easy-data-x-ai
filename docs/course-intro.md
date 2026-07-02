@@ -94,7 +94,7 @@
         ├── D2：一个系统搞定 —— 统一 AI Native 数据层实战
         ├── D3：实践出真知 —— Agentic RAG 实战
         ├── D4：记哪些、忘哪些？—— Agent 记忆系统开发
-        └── D5：授 AI 以渔 —— 综合实战，从 Skill 开发到 MCP 标准化
+        └── D5：课程总结
 ```
 
 课程更新时间为：2026 / 3 / 23 ~ 2026 / 5 / 20。
@@ -125,7 +125,7 @@
     <tr><td>D2</td><td>4 / 27</td><td>一个系统搞定 —— 统一 AI Native 数据层实战</td></tr>
     <tr><td>D3</td><td>5 / 11</td><td>实践出真知 —— Agentic RAG 实战</td></tr>
     <tr><td>D4</td><td>5 / 25</td><td>记哪些、忘哪些？—— Agent 记忆系统开发</td></tr>
-    <tr><td>D5</td><td>6 / 8</td><td>授 AI 以渔 —— 综合实战，从 Skill 开发到 MCP 标准化</td></tr>
+    <tr><td>D5</td><td>6 / 8</td><td>课程总结</td></tr>
     <tr><td>结营仪式</td><td></td><td>6 / 15</td><td>结营仪式</td></tr>
   </tbody>
 </table>
