@@ -82,7 +82,7 @@ export default defineConfig({
           { text: 'X2：多 Skill 与上下文工程', link: '/extra/X2 多 Skill 给上下文工程带来的麻烦：如何应对 Agent「爆上下文」' },
           { text: 'X3：混合检索与统一数据基座', link: '/extra/X3 从零到一上手混合检索：AI Native 统一数据基座实战' },
           { text: 'X4：数据湖库与多模数据降本', link: '/extra/X4 海量 AI Agent 多模数据降本：数据湖库登场' },
-          { text: 'X5：由你来定！', link: '/extra/X5 由你来定' }
+          { text: 'X5：从 Skill 到 MCP Tool', link: '/extra/X5 从 Skill 到 MCP Tool' }
         ]
       }
     ],

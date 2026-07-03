@@ -393,7 +393,7 @@ if response.tool_calls:
 
 + **D2-D3（RAG）**：Agent 声明“我需要查询知识库”→ 你的代码调用 seekdb 执行混合检索 → 结果返回给 Agent → Agent 基于检索结果回答。Tool Use 是这个流程的触发机制。
 + **D4（Memory）**：Agent 声明“我需要存储/读取一条记忆”→ 你的代码调用 PowerMem → 记忆数据的存取通过 Tool Use 完成。
-+ **D5（Skill & MCP）**：Agent 声明“我需要调用某个外部服务”→ 通过 MCP 协议连接外部工具 → 底层仍然是 Tool Use 在驱动。
++ **X5（Skill & MCP）**：Agent 声明“我需要调用某个外部服务”→ 通过 MCP 协议连接外部工具 → 底层仍然是 Tool Use 在驱动。
 
 换句话说：Tool Use 不是一个孤立的 API 特性——它是 Agent 架构的**连接层**。模型的推理能力和外部数据之间，就靠这一层协议打通。你在 D1 理解了这个机制，后面所有模块的代码，你都能看懂它们在做什么。
 

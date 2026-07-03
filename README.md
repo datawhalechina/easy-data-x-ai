@@ -89,7 +89,7 @@
 | **X2** | 多 Skill 给上下文工程带来的麻烦：如何应对 Agent「爆上下文」 | 多 Skill / 上下文工程 | Skill 设计规范（→ [#22](https://github.com/datawhalechina/easy-data-x-ai/issues/22)/[#23](https://github.com/datawhalechina/easy-data-x-ai/issues/23)） |
 | **X3** | 从零到一上手混合检索：AI Native 统一数据基座实战 | Agentic RAG / 混合检索 | 扩充 RAG 评测数据集（→ [#29](https://github.com/datawhalechina/easy-data-x-ai/issues/29)/[#30](https://github.com/datawhalechina/easy-data-x-ai/issues/30)） |
 | **X4** | 海量 AI Agent 多模数据降本：数据湖库登场 | 数据湖库 × AI | 开源「湖到 RAG」教程（→ [#32](https://github.com/datawhalechina/easy-data-x-ai/issues/32)/[#33](https://github.com/datawhalechina/easy-data-x-ai/issues/33)） |
-| **X5** | 由你来定！ | ？？？ | ？？？ |
+| **X5** | 从 Skill 到 MCP Tool | Skill / MCP | 从零实现 MCP Server（→ [#34](https://github.com/datawhalechina/easy-data-x-ai/issues/34)） |
 
 ---
 

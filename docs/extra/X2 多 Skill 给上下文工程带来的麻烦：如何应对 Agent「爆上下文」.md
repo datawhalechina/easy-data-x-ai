@@ -432,7 +432,7 @@ MCP Server 暴露的 Tool 示例：
 | `get_skill_rules(name)` | 获取指定 Skill 的规则 |
 | `get_skill_examples(name)` | 获取指定 Skill 的示例 |
 
-这样，**Skill 的存储和检索逻辑只写一次**，任何支持 MCP 的 Agent 都能按需调用——这正是 D5 共建任务 [#34](https://github.com/datawhalechina/easy-data-x-ai/issues/34) 的方向。
+这样，**Skill 的存储和检索逻辑只写一次**，任何支持 MCP 的 Agent 都能按需调用——这正是 X5 共建任务 [#34](https://github.com/datawhalechina/easy-data-x-ai/issues/34) 的方向。
 
 ---
 

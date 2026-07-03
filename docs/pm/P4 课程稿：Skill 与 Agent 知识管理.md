@@ -423,7 +423,7 @@ Agent 客户端：发现 Tool、组织参数、调用 Tool、使用返回结果
 
 当一个 Skill 还在快速迭代时，直接写成文档最灵活；当它已经足够稳定，并且需要跨客户端、跨项目、跨团队复用时，就可以考虑 MCP 化。比如 `code-review` 这类任务，输入通常是 diff 或 PR 上下文，检查维度相对稳定，输出格式也可以结构化，就很适合从 Skill 进一步包装成 MCP Tool。
 
-所以，P4 到这里完成的是产品和数据视角的铺垫：Skill 是可管理的经验数据。下一步，到了 D5 的工程实战，我们会把这个观点落到代码里：从零实现一个最小 MCP Server，把 `code-review` Skill 包装成 `review_code_diff` Tool，并让不同 Agent 客户端通过标准协议调用它。
+所以，P4 到这里完成的是产品和数据视角的铺垫：Skill 是可管理的经验数据。下一步，到了 X5 的扩展实战，我们会把这个观点落到代码里：从零实现一个最小 MCP Server，把 `code-review` Skill 包装成 `review_code_diff` Tool，并让不同 Agent 客户端通过标准协议调用它。
 
 
 ## 课后行动

@@ -18,5 +18,5 @@ langgraph>=1.1.6
 pyseekdb>=1.2.0.post1
 PyYAML>=5.4.1
 
-# D5 MCP 实战
+# X5 MCP 实战
 mcp[cli]
