@@ -1,0 +1,45 @@
+{
+  "agents": [
+    {
+      "agent_id": "agent_code_assistant",
+      "name": "代码助手",
+      "description": "帮助用户编写和调试代码",
+      "default_scope": "PRIVATE",
+      "agent_group": "dev_tools"
+    },
+    {
+      "agent_id": "agent_life_assistant",
+      "name": "生活助手",
+      "description": "帮助用户管理日常生活、饮食、健康建议",
+      "default_scope": "PRIVATE",
+      "agent_group": "life_tools"
+    },
+    {
+      "agent_id": "agent_finance_assistant",
+      "name": "财务助手",
+      "description": "帮助用户管理财务、投资建议",
+      "default_scope": "PRIVATE",
+      "agent_group": "life_tools"
+    },
+    {
+      "agent_id": "agent_project_manager",
+      "name": "项目管理助手",
+      "description": "帮助用户管理项目进度和团队协作",
+      "default_scope": "PRIVATE",
+      "agent_group": "dev_tools"
+    }
+  ],
+  "agent_groups": {
+    "dev_tools": {
+      "name": "开发工具组",
+      "members": ["agent_code_assistant", "agent_project_manager"],
+      "description": "所有开发相关的 Agent"
+    },
+    "life_tools": {
+      "name": "生活工具组",
+      "members": ["agent_life_assistant", "agent_finance_assistant"],
+      "description": "所有生活相关的 Agent"
+    }
+  },
+  "user_id": "user_001"
+}

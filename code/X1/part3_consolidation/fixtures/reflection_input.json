@@ -1,0 +1,79 @@
+{
+  "recent_memories": [
+    {
+      "id": "r001",
+      "content": "用户今天在 Stack Overflow 上查 Rust 生命周期（lifetime）的问题",
+      "timestamp": "2026-01-20T10:00:00",
+      "category": "情景记忆",
+      "topic": "Rust 学习"
+    },
+    {
+      "id": "r002",
+      "content": "用户下载了 Rust 官方教程，开始从第一章系统学习",
+      "timestamp": "2026-01-21T14:00:00",
+      "category": "情景记忆",
+      "topic": "Rust 学习"
+    },
+    {
+      "id": "r003",
+      "content": "用户搭建了 Rust 开发环境，安装了 rustup 和 VSCode Rust 插件",
+      "timestamp": "2026-01-22T09:00:00",
+      "category": "情景记忆",
+      "topic": "Rust 学习"
+    },
+    {
+      "id": "r004",
+      "content": "用户询问了 Django ORM 的 N+1 查询优化问题",
+      "timestamp": "2026-01-22T16:00:00",
+      "category": "情景记忆",
+      "topic": "Python 开发"
+    },
+    {
+      "id": "r005",
+      "content": "用户使用 Django + PostgreSQL 成功处理了 100 万行 CSV 数据导入",
+      "timestamp": "2026-01-23T11:00:00",
+      "category": "情景记忆",
+      "topic": "Python 开发"
+    },
+    {
+      "id": "r006",
+      "content": "用户对比了 Rust 和 Go 的并发模型，认为 Rust 的 ownership 概念有学习曲线但值得投入",
+      "timestamp": "2026-01-24T15:00:00",
+      "category": "情景记忆",
+      "topic": "Rust 学习"
+    },
+    {
+      "id": "r007",
+      "content": "用户上周开始每天 6 点起床跑步，坚持了一整周",
+      "timestamp": "2026-01-25T07:00:00",
+      "category": "情景记忆",
+      "topic": "生活习惯"
+    },
+    {
+      "id": "r008",
+      "content": "用户周末去了三家素食餐厅，对其中一家的素食披萨评价很高",
+      "timestamp": "2026-01-25T19:00:00",
+      "category": "情景记忆",
+      "topic": "饮食偏好"
+    },
+    {
+      "id": "r009",
+      "content": "用户询问了 Rust Web 框架选型：Actix-web vs Axum",
+      "timestamp": "2026-01-26T10:00:00",
+      "category": "情景记忆",
+      "topic": "Rust 学习"
+    },
+    {
+      "id": "r010",
+      "content": "用户用 Axum 搭建了第一个 REST API，觉得比预期简单",
+      "timestamp": "2026-01-27T16:00:00",
+      "category": "情景记忆",
+      "topic": "Rust 学习"
+    }
+  ],
+  "reflection_config": {
+    "min_related_count": 3,
+    "time_window_days": 14,
+    "min_confidence": 0.6
+  }
+}

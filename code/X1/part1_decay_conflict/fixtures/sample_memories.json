@@ -1,0 +1,192 @@
+{
+  "memories": [
+    {
+      "id": "mem_001",
+      "content": "用户是 Python 后端开发者，有 5 年经验",
+      "importance_score": 0.85,
+      "memory_type": "long_term",
+      "created_at": "2025-12-01T10:00:00",
+      "last_reviewed": "2025-12-15T10:00:00",
+      "access_count": 12,
+      "is_active": true
+    },
+    {
+      "id": "mem_002",
+      "content": "用户偏好简洁的代码风格，不喜欢过多的注释",
+      "importance_score": 0.65,
+      "memory_type": "short_term",
+      "created_at": "2025-12-10T14:30:00",
+      "last_reviewed": "2025-12-20T14:30:00",
+      "access_count": 5,
+      "is_active": true
+    },
+    {
+      "id": "mem_003",
+      "content": "用户最近在学习 Rust 语言，是初学者",
+      "importance_score": 0.70,
+      "memory_type": "short_term",
+      "created_at": "2026-01-05T09:00:00",
+      "last_reviewed": "2026-01-05T09:00:00",
+      "access_count": 2,
+      "is_active": true
+    },
+    {
+      "id": "mem_004",
+      "content": "用户对花生过敏，所有食物相关建议必须避开花生",
+      "importance_score": 0.95,
+      "memory_type": "long_term",
+      "created_at": "2025-06-01T08:00:00",
+      "last_reviewed": "2025-10-01T08:00:00",
+      "access_count": 1,
+      "is_active": true
+    },
+    {
+      "id": "mem_005",
+      "content": "用户喜欢用 VS Code 编辑器",
+      "importance_score": 0.40,
+      "memory_type": "working",
+      "created_at": "2026-01-10T16:00:00",
+      "last_reviewed": "2026-01-10T16:00:00",
+      "access_count": 1,
+      "is_active": true
+    },
+    {
+      "id": "mem_006",
+      "content": "用户正在做一个电商项目，技术栈是 Django + PostgreSQL",
+      "importance_score": 0.75,
+      "memory_type": "short_term",
+      "created_at": "2026-01-08T11:00:00",
+      "last_reviewed": "2026-01-12T11:00:00",
+      "access_count": 3,
+      "is_active": true
+    },
+    {
+      "id": "mem_007",
+      "content": "用户最喜欢吃披萨，尤其是意式薄底披萨",
+      "importance_score": 0.35,
+      "memory_type": "working",
+      "created_at": "2025-11-15T19:00:00",
+      "last_reviewed": "2025-11-15T19:00:00",
+      "access_count": 0,
+      "is_active": true
+    },
+    {
+      "id": "mem_008",
+      "content": "用户最近三周在吃素",
+      "importance_score": 0.50,
+      "memory_type": "working",
+      "created_at": "2026-01-01T12:00:00",
+      "last_reviewed": "2026-01-01T12:00:00",
+      "access_count": 1,
+      "is_active": true
+    },
+    {
+      "id": "mem_009",
+      "content": "用户目前主要使用 Java 开发后端服务",
+      "importance_score": 0.80,
+      "memory_type": "long_term",
+      "created_at": "2025-08-01T10:00:00",
+      "last_reviewed": "2025-12-01T10:00:00",
+      "access_count": 8,
+      "is_active": false
+    },
+    {
+      "id": "mem_010",
+      "content": "用户已从 Java 全面转向 Go 语言开发",
+      "importance_score": 0.82,
+      "memory_type": "long_term",
+      "created_at": "2026-01-02T10:00:00",
+      "last_reviewed": "2026-01-02T10:00:00",
+      "access_count": 3,
+      "is_active": true
+    },
+    {
+      "id": "mem_011",
+      "content": "用户公司使用 AWS 作为云平台",
+      "importance_score": 0.72,
+      "memory_type": "short_term",
+      "created_at": "2025-10-01T09:00:00",
+      "last_reviewed": "2025-12-15T09:00:00",
+      "access_count": 4,
+      "is_active": false
+    },
+    {
+      "id": "mem_012",
+      "content": "用户公司已从 AWS 迁移到阿里云",
+      "importance_score": 0.74,
+      "memory_type": "short_term",
+      "created_at": "2026-01-08T09:00:00",
+      "last_reviewed": "2026-01-08T09:00:00",
+      "access_count": 2,
+      "is_active": true
+    }
+  ],
+  "conflict_cases": [
+    {
+      "id": "case_001",
+      "description": "直接矛盾：技术栈变更",
+      "old_memory": "用户主要使用 Java 开发后端服务",
+      "new_fact": "用户已全面转向 Go 语言，不再使用 Java",
+      "expected_action": "UPDATE",
+      "expected_reason": "新事实直接替代旧事实，旧版标记 is_active=False"
+    },
+    {
+      "id": "case_002",
+      "description": "并存偏好：食物偏好不矛盾",
+      "old_memory": "用户最喜欢吃披萨，尤其是意式薄底披萨",
+      "new_fact": "用户最近三周在吃素",
+      "expected_action": "ADD",
+      "expected_reason": "两条偏好并存，不构成矛盾，各自独立衰减"
+    },
+    {
+      "id": "case_003",
+      "description": "时间演进：云平台迁移",
+      "old_memory": "用户公司使用 AWS 作为云平台",
+      "new_fact": "用户公司已从 AWS 迁移到阿里云",
+      "expected_action": "UPDATE",
+      "expected_reason": "事实随时间演进，旧版失效、新版 active"
+    },
+    {
+      "id": "case_004",
+      "description": "直接矛盾：饮食偏好",
+      "old_memory": "用户最喜欢吃披萨，尤其是意式薄底披萨",
+      "new_fact": "用户非常讨厌披萨，从来不吃",
+      "expected_action": "DELETE",
+      "expected_reason": "直接矛盾，删除旧偏好"
+    },
+    {
+      "id": "case_005",
+      "description": "细化补充：同一话题更多细节",
+      "old_memory": "用户正在做一个电商项目",
+      "new_fact": "用户的电商项目用 Django + PostgreSQL，涉及跨境支付",
+      "expected_action": "UPDATE",
+      "expected_reason": "新事实是旧事实的细化，应合并更新"
+    }
+  ],
+  "queries": [
+    {
+      "id": "q_001",
+      "query_text": "用户用什么编程语言？",
+      "expected_answer_deterministic": "用户已从 Java 全面转向 Go 语言开发",
+      "note": "确定性聚合应返回最新 active 版本（Go），而非旧版（Java）"
+    },
+    {
+      "id": "q_002",
+      "query_text": "用户喜欢吃什么？",
+      "expected_answer_context": "用户最喜欢吃披萨，但最近在吃素",
+      "note": "需要同时返回两条并存偏好，留给 LLM 综合判断"
+    },
+    {
+      "id": "q_003",
+      "query_text": "用户的云服务用哪家？",
+      "expected_answer_deterministic": "用户公司已从 AWS 迁移到阿里云",
+      "note": "迁移类场景，新版 active 为准"
+    },
+    {
+      "id": "q_004",
+      "query_text": "推荐一个适合用户的后端框架",
+      "expected_context": "用户是 Python 开发者（mem_001），正在学 Rust（mem_003），但主力是 Go（mem_010）",
+      "note": "多记忆综合，多种技术栈并存"
+    }
+  ]
+}

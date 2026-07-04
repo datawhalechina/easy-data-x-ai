@@ -1,0 +1,52 @@
+{
+  "user_profile": {
+    "basic_info": {
+      "name": "张三",
+      "role": "高级后端工程师",
+      "company": "某电商公司",
+      "years_of_experience": 8
+    },
+    "tech_stack": {
+      "primary_language": "Go",
+      "secondary_languages": ["Python", "Rust"],
+      "framework": "Django",
+      "cloud": "阿里云",
+      "editor": "VS Code"
+    },
+    "preferences": {
+      "code_style": "简洁，不喜欢过多注释",
+      "learning_style": "动手实践优先",
+      "communication": "直接，喜欢要点式回答"
+    },
+    "health": {
+      "allergies": ["花生"],
+      "dietary": "近期在尝试素食"
+    }
+  },
+  "promotable_memories": [
+    {
+      "content": "用户是高级后端工程师，有 8 年经验",
+      "suggested_scope": "AGENT_GROUP",
+      "target_group": "dev_tools",
+      "reason": "技术身份信息，所有开发工具 Agent 需要知道"
+    },
+    {
+      "content": "用户偏好简洁的代码风格，不喜欢过多注释",
+      "suggested_scope": "AGENT_GROUP",
+      "target_group": "dev_tools",
+      "reason": "代码偏好，开发 Agent 共享"
+    },
+    {
+      "content": "用户对花生过敏",
+      "suggested_scope": "AGENT_GROUP",
+      "target_group": "life_tools",
+      "reason": "健康安全信息，生活类 Agent 需要知道"
+    },
+    {
+      "content": "用户最近在尝试素食",
+      "suggested_scope": "AGENT_GROUP",
+      "target_group": "life_tools",
+      "reason": "饮食偏好，生活类 Agent 共享"
+    }
+  ]
+}

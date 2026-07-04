@@ -1,30 +1,42 @@
----
-title: X1 探究 AI Agent 记忆系统：从遗忘曲线到永久记忆
----
-
 # X1：探究 AI Agent 记忆系统 —— 从遗忘曲线到永久记忆
 
-::: warning 🚧 本章节正在招募共建中
-这是《Easy Data x AI》的**扩展篇（Extra-Chapter）**，目前尚未成稿，正在面向社区招募共建者一起撰写。欢迎你来认领！
-:::
-
-## 这一章打算讲什么
-
-| | |
-| --- | --- |
-| **热点趋势** | AI 记忆 |
-| **关联正文** | 道篇 P3、术篇 D4（记忆系统） |
-| **共建入口** | 多 Agent 记忆冲突解决（对应共建任务 [#19](https://github.com/datawhalechina/easy-data-x-ai/issues/19) / [#20](https://github.com/datawhalechina/easy-data-x-ai/issues/20) / [#21](https://github.com/datawhalechina/easy-data-x-ai/issues/21)） |
-
-> 在课程正文 P3 / D4 的记忆系统基础上，进一步探究：记忆如何随时间衰减、如何在多 Agent 间隔离与共享、新旧记忆冲突如何解决，直到走向「永久记忆」。
+> Easy Data x AI 课程 · 扩展篇
 >
-> 详细大纲待共建者与维护者一起对齐后补充。
+> P3 讲清了记忆系统的设计，D4 完成了基础接入。当记忆条目上万、偏好频繁变化、检索开始返回矛盾事实时——工程问题才真正出现。X1 系列用可运行的示例代码，把剩下的坑填上。
 
-## 如何参与共建
+## 这个系列解决什么
 
-本章节欢迎你来认领、撰写。完整的参与方式、任务列表与激励机制，请阅读：
+P3 用 CoALA 框架把记忆分为短期和三种长期记忆，讲了遗忘分数的直觉和冲突裁决的产品策略。D4 带你完成了记忆接入，让 Agent「能记住」。
 
-👉 **[贡献指南 CONTRIBUTING.md](https://github.com/datawhalechina/easy-data-x-ai/blob/main/CONTRIBUTING.md)**
+但记住 ≠ 记好。当你真正把记忆系统跑起来，三个问题会逐渐浮现：
 
-- 扩展篇方向较大，**认领前请先开 [Issue](https://github.com/datawhalechina/easy-data-x-ai/issues) 对齐内容大纲**。
-- 完成后提交 PR，即可登上仓库[贡献者墙](https://github.com/datawhalechina/easy-data-x-ai#-贡献者墙)并获得社区激励。
+1. **衰减不可控**：不该忘的忘了（花生过敏），该忘的不忘（三年前的临时偏好）
+2. **冲突无管线**：矛盾事实一并塞进 Prompt，LLM 临场判断，结果不稳定
+3. **多 Agent 无边界**：工作场景的记忆泄漏到生活场景，两 Agent 并发写的冲突
+
+**核心价值**：以 `code/X1/` 中的示例代码为主线，配合行业对照与评测方法，完成「概念 → 接入 → 深潜」的完整闭环。
+
+## 学习路径
+
+本系列分三篇，每篇独立可读，按顺序效果最佳：
+
+| | 标题 | 聚焦 | 关键问题 |
+| --- | --- | --- | --- |
+| **上篇** | [记忆的生命周期工程](X1-1%20记忆的生命周期工程.md) | 单 Agent：衰减与冲突 | 参数怎么调、冲突怎么自动检测和裁决 |
+| **中篇** | [记忆的边界与信任](X1-2%20记忆的边界与信任.md) | 多 Agent：隔离、共享与治理 | 命名空间如何落地、跨 Agent 如何安全共享 |
+| **下篇** | [从记忆到认知](X1-3%20从记忆到认知.md) | 巩固、永久记忆、评测与选型 | 怎么从海量记忆中蒸馏出稳定认知、怎么量化系统质量 |
+
+## 实战代码
+
+本期课程涉及的代码，均在 https://github.com/datawhalechina/easy-data-x-ai 项目的 `code/X1/` 目录中。纯 Python + JSON fixtures，`pip install numpy` 即可运行全部实验。
+
+| 篇 | 代码目录 | 核心实验 |
+| --- | --- | --- |
+| 上篇 | `code/X1/part1_decay_conflict/` | 遗忘分数计算、λ 消融、两阶段检索、冲突检测与裁决 |
+| 中篇 | `code/X1/part2_namespace/` | 命名空间隔离、权限提升、跨 Agent 查询、并发写入 |
+| 下篇 | `code/X1/part3_consolidation/` | 被动巩固、Reflection 蒸馏、画像+事实组合检索、简易评测 |
+
+## 相关文章阅读
+
+- 道篇 [P3：Agent 记忆系统设计](../pm/P3%20课程稿：Agent%20记忆系统设计.md)
+- 术篇 [D4：Agent 开发与记忆系统](../dev/D4%20课程稿：Agent%20开发与记忆系统.md)

@@ -1,0 +1,90 @@
+{
+  "qa_pairs": [
+    {
+      "id": "q001",
+      "question": "用户目前主要使用什么编程语言？",
+      "expected_answer": "Go",
+      "relevant_memories": ["mem_010", "mem_009"],
+      "category": "事实记忆",
+      "difficulty": "easy"
+    },
+    {
+      "id": "q002",
+      "question": "用户对什么食物过敏？",
+      "expected_answer": "花生",
+      "relevant_memories": ["mem_004"],
+      "category": "安全关键",
+      "difficulty": "easy"
+    },
+    {
+      "id": "q003",
+      "question": "用户在学什么新技术？",
+      "expected_answer": "Rust",
+      "relevant_memories": ["mem_003"],
+      "category": "事实记忆",
+      "difficulty": "easy"
+    },
+    {
+      "id": "q004",
+      "question": "用户当前的云平台是什么？",
+      "expected_answer": "阿里云",
+      "relevant_memories": ["mem_012", "mem_011"],
+      "category": "冲突解决",
+      "difficulty": "medium"
+    },
+    {
+      "id": "q005",
+      "question": "用户的饮食偏好是什么？",
+      "expected_answer": "披萨、素",
+      "relevant_memories": ["mem_007", "mem_008"],
+      "category": "并存偏好",
+      "difficulty": "medium"
+    },
+    {
+      "id": "q006",
+      "question": "推荐一个适合用户的后端技术方案",
+      "expected_answer": "Go、微服务、阿里云",
+      "relevant_memories": ["mem_010", "mem_012", "mem_001"],
+      "category": "综合推理",
+      "difficulty": "hard"
+    },
+    {
+      "id": "q007",
+      "question": "用户的代码风格偏好是什么？",
+      "expected_answer": "简洁、注释",
+      "relevant_memories": ["mem_002"],
+      "category": "偏好记忆",
+      "difficulty": "easy"
+    },
+    {
+      "id": "q008",
+      "question": "用户之前在用什么语言开发？",
+      "expected_answer": "Java",
+      "relevant_memories": ["mem_009"],
+      "category": "历史追溯",
+      "difficulty": "medium"
+    }
+  ],
+  "strategies_to_evaluate": [
+    {
+      "name": "no_decay",
+      "description": "不使用衰减，仅语义排序",
+      "params": {"decay_rate": 100}
+    },
+    {
+      "name": "default_decay",
+      "description": "默认衰减参数（λ=1.5）",
+      "params": {"decay_rate": 1.5}
+    },
+    {
+      "name": "aggressive_decay",
+      "description": "激进衰减（λ=5.0）",
+      "params": {"decay_rate": 5.0}
+    },
+    {
+      "name": "conservative_decay",
+      "description": "保守衰减（λ=0.5）",
+      "params": {"decay_rate": 0.5}
+    }
+  ]
+}

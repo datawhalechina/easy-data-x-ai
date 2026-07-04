@@ -78,7 +78,16 @@ export default defineConfig({
         text: '第四章：扩展篇（共建招募中）',
         collapsed: false,
         items: [
-          { text: 'X1：探究 AI Agent 记忆系统', link: '/extra/X1 探究 AI Agent 记忆系统：从遗忘曲线到永久记忆' },
+          {
+            text: 'X1：探究 AI Agent 记忆系统',
+            collapsed: false,
+            items: [
+              { text: '系列导读', link: '/extra/X1 探究 AI Agent 记忆系统：从遗忘曲线到永久记忆' },
+              { text: 'X1-1：记忆的生命周期工程', link: '/extra/X1-1 记忆的生命周期工程' },
+              { text: 'X1-2：记忆的边界与信任', link: '/extra/X1-2 记忆的边界与信任' },
+              { text: 'X1-3：从记忆到认知', link: '/extra/X1-3 从记忆到认知' },
+            ]
+          },
           { text: 'X2：多 Skill 与上下文工程', link: '/extra/X2 多 Skill 给上下文工程带来的麻烦：如何应对 Agent「爆上下文」' },
           { text: 'X3：混合检索与统一数据基座', link: '/extra/X3 从零到一上手混合检索：AI Native 统一数据基座实战' },
           { text: 'X4：数据湖库与多模数据降本', link: '/extra/X4 海量 AI Agent 多模数据降本：数据湖库登场' },

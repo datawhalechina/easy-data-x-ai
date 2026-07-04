@@ -1,0 +1,40 @@
+{
+  "profile": {
+    "identity": {
+      "name": "张三",
+      "role": "高级后端工程师",
+      "years_of_experience": 8,
+      "company_type": "电商"
+    },
+    "tech_stack": {
+      "primary_language": "Go",
+      "secondary_languages": ["Python", "Rust（学习中）"],
+      "framework_preference": "简洁轻量",
+      "database": "PostgreSQL",
+      "cloud": "阿里云"
+    },
+    "preferences": {
+      "code_style": "简洁，不喜欢过多注释",
+      "communication": "直接，要点式回答",
+      "learning_style": "动手实践优先于理论"
+    },
+    "health_and_safety": {
+      "allergies": ["花生"],
+      "dietary": "近期在尝试素食"
+    },
+    "current_context": {
+      "project": "电商平台后端重构",
+      "learning": "Rust（系统学习阶段）",
+      "exercise": "每天晨跑"
+    }
+  },
+  "vector_facts": [
+    {"content": "用户的电商项目涉及跨境支付和多币种结算", "category": "项目细节"},
+    {"content": "用户之前用 Java 开发，2026年1月全面转向 Go", "category": "技术变迁"},
+    {"content": "用户用 Django + PostgreSQL 成功处理了 100 万行 CSV 数据导入", "category": "成功经验"},
+    {"content": "用户使用 Axum 框架搭建了第一个 Rust REST API", "category": "技术实践"},
+    {"content": "用户对比了 Rust 和 Go 的并发模型", "category": "技术探索"},
+    {"content": "用户周末去了三家素食餐厅，喜欢素食披萨", "category": "饮食偏好"},
+    {"content": "用户坚持每天 6 点晨跑，已持续一周", "category": "生活习惯"}
+  ]
+}
