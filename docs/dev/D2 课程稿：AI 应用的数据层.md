@@ -118,7 +118,197 @@ vector = embed("错误码 E-4012 表示数据库连接超时")
 print(f"向量维度：{len(vector)}")  # 输出：向量维度：1024
 ```
 
-Embedding 模型不需要你自己训练——直接调用 API 即可。`BAAI/bge-m3` 是目前中英文效果都不错的开源模型，在硅基流动上免费可用。
+Embedding 模型不需要你自己训练，直接调用 API 即可。上面这段代码能跑通，说明向量化这一步没有技术门槛。但真正上线一个 RAG 系统时，很多人会卡在一个更实际的问题上：
+
+**模型那么多，到底选哪个？**
+
+OpenAI 的 `text-embedding-3`、智源的 `bge-m3`、阿里的 `Qwen3-Embedding`、通义的 `text-embedding-v3`、Google 的 `Gemini Embedding`……名字一长串，MTEB 排行榜上今天第一明天又换。本课程示例默认使用 `BAAI/bge-m3`，它在硅基流动上免费可用，中英文效果均衡，还支持 8192 token 的长文本输入，适合学习阶段零成本跑通全流程。
+
+但这只是教学用的默认答案，并非所有场景的最优解。下面这套选型框架，帮你在进入生产环境时做出自己的判断。
+
+### Embedding 模型选型指南
+
+#### 先搞懂两个评测概念
+
+在对比模型之前，先明确两个你会反复遇到的术语。
+
+**MTEB 排行榜**（[Massive Text Embedding Benchmark](https://huggingface.co/spaces/mteb/leaderboard)）是目前最权威的 Embedding 模型公开评测。它把模型放到检索、分类、聚类、语义相似度等上百个标准任务上跑分，然后给出综合排名。做 RAG 检索时，重点看 Retrieval 子任务的得分，不要只看总分。MTEB 也有局限：它主要测纯文本、短文本，不覆盖多模态检索、跨语言检索、维度压缩（MRL）和长文档大海捞针等生产场景，所以排行榜适合**缩小候选范围**，不能替代你自己的实测。
+
+**Recall@K 对比**是更贴近业务的验证方式。做法是：准备 20–50 条真实业务查询，标注每条查询应该命中的文档（Ground Truth），分别用不同 Embedding 模型做检索，看正确答案出现在前 K 条结果里的比例。例如 50 条查询里有 42 条的正确答案出现在 Top-3 里，就是 Recall@3 = 84%。通常同时看 **Recall@1**（最严格，看第一条是否命中）和 **Recall@5**（更宽松），以及 **MRR**（第一个正确结果排在第几位，排得越靠前越好）。MTEB 反映的是通用能力，Recall@K 反映的是业务数据上的实际效果。
+
+#### 四个核心维度
+
+确定评测方法后，按以下四个维度缩小候选范围：**中英文能力、多模态支持、成本、延迟**。
+
+##### 维度一：中英文能力
+
+Embedding 模型的语言偏好，直接决定你的知识库能不能被正确理解。
+
+| 模型 | 类型 | 中文 | 英文 | 多语言 | 最大输入 | 适合场景 |
+| --- | --- | --- | --- | --- | --- | --- |
+| `BAAI/bge-m3` | 开源 API | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | 100+ 语言 | 8192 tokens | 中英文混合知识库，课程默认推荐 |
+| `BAAI/bge-large-zh-v1.5` | 开源 API | ⭐⭐⭐⭐⭐ | ⭐⭐ | 中文为主 | 512 tokens | 纯中文短文本，轻量快速 |
+| `netease-youdao/bce-embedding-base_v1` | 开源 API | ⭐⭐⭐⭐ | ⭐⭐⭐ | 中英双语 | 512 tokens | 中英双语 FAQ、客服知识库 |
+| `Qwen/Qwen3-Embedding-8B` | 开源 API | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | 100+ 语言 | 32768 tokens | 追求最高检索质量、长文档场景 |
+| 通义 `text-embedding-v3/v4` | 商业 API | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | 多语言 | 8192 tokens | 国内 API、中文优化、数据合规 |
+| `jina-embeddings-v3/v4` | 商业 API | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | 多语言 | 8192 tokens | 多语言检索、多模态（v4 支持图文 PDF） |
+| `text-embedding-3-small` | 商业 API | ⭐⭐⭐ | ⭐⭐⭐⭐⭐ | 多语言 | 8191 tokens | 海外部署、英文为主、快速接入 |
+| `text-embedding-3-large` | 商业 API | ⭐⭐⭐ | ⭐⭐⭐⭐⭐ | 多语言 | 8191 tokens | 英文高质量检索，成本更高 |
+| `Gemini Embedding 2` | 商业 API | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | 100+ 语言 | 32K+ tokens | 跨语言最强、长文档、五种模态 |
+
+几个值得注意的判断：
+
+- **中文为主**：`bge-m3`、`bge-large-zh-v1.5`、通义 embedding 系列在中文检索上普遍优于 OpenAI 的 `text-embedding-3` 系列。实测中，中文企业文档场景下 `bge-m3` 和通义 v3 的 Hit@5 普遍在 90% 以上，而 `text-embedding-3-small` 约 85%。
+- **英文为主或出海业务**：`text-embedding-3-large`、Gemini Embedding、Voyage 系列在英文基准上更成熟。国内团队如果数据可以出境、追求零运维，这是省心的选择。
+- **中英混合或多语言**：`bge-m3` 是目前开源阵营里多语言能力最均衡的之一，支持 100+ 语言，且单一模型覆盖所有语种，不需要按语言维护多套索引。跨语言检索（中文 query 查英文文档）场景下，Gemini Embedding 表现最好；`Qwen3-Embedding` 系列在 MTEB 多语言榜单上分数也很高。
+- **长文档片段**：如果你的 chunk 经常超过 500 字（比如整段技术方案、长篇 FAQ），优先选支持 8192 token 以上的模型（`bge-m3`、`Qwen3-Embedding` 系列）。`bge-large-zh-v1.5` 虽然中文效果好，但最大输入只有 512 tokens，长文本会被截断，语义丢失严重。轻量模型（137M 参数的 `nomic-embed-text`）在 4000 字以上的文档中准确率会明显下滑。
+
+##### 维度二：多模态支持
+
+到目前为止，我们讨论的都是**纯文本 Embedding**，输入是文字，输出是向量。但真实业务里，知识库不只有文字：
+
+- 产品手册里的架构图、流程图
+- 财报 PDF 中的表格和图表
+- 扫描件、截图里的文字和排版信息
+
+这些内容的语义，纯文本 Embedding 是抓不住的。你需要**多模态 Embedding**，能同时理解文字和图像。
+
+目前主流有三条技术路线：
+
+| 路线 | 代表模型 | 原理 | 优势 | 劣势 |
+| --- | --- | --- | --- | --- |
+| 图片描述 + 文本索引 | CLIP 系列 | 图片先转文字描述，再走文本 Embedding | 实现简单，生态成熟 | 图表、表格、排版信息大量丢失 |
+| 统一多模态向量 | Cohere Embed v4、`Qwen3-VL-Embedding`、`Gemini Embedding 2` | 图文输入同一模型，输出单一向量 | 工程简单，支持图文混合查询 | 对复杂版式文档的细粒度匹配有限 |
+| 页面级多向量检索 | ColPali、ColNomic、ColQwen 系列 | 把 PDF 页面当图片，输出 token 级多向量 | 表格/图表/排版召回率最高 | 存储和检索成本高，工程复杂度高 |
+
+怎么选？
+
+- **知识库几乎全是纯文本**（API 文档、Wiki、Markdown）：不需要多模态，`bge-m3` 足够。
+- **偶尔有几张配图**，配图信息不重要：可以先用纯文本方案，图片用 OCR 或 VLM 生成描述后入库。
+- **大量 PDF、扫描件、图表密集型文档**（财报、论文、产品规格书）：考虑 ColPali 风格的页面级检索，或 Cohere Embed v4 / `Qwen3-VL-Embedding` 统一向量方案。
+- **想快速体验图文混合检索**：硅基流动已支持 `Qwen/Qwen3-VL-Embedding-8B`，输入可以是文本、图片 URL 或图文混合列表，和本课程的 OpenAI 兼容调用方式一致。
+
+```python
+# 多模态 Embedding 示例：文本 + 图片混合输入
+response = client.embeddings.create(
+    model="Qwen/Qwen3-VL-Embedding-8B",
+    input=[
+        "这张架构图展示了系统的三层设计",
+        {"image": "https://example.com/architecture.png"}
+    ]
+)
+```
+
+多模态选型还有一个技术指标值得留意：**模态间隙（Modality Gap）**，衡量文本向量和图片向量在同一个向量空间里是否足够接近。间隙越小，图文混合检索越准确。实测中，`Qwen3-VL-Embedding-2B` 的模态间隙远低于 Gemini，在跨模态检索上甚至能超过部分闭源 API。
+
+需要提醒的是：**多模态 Embedding 不能替代混合搜索**。即便用了多模态模型，精确匹配（版本号、错误码、函数名）仍然需要全文搜索兜底，这一点和 D2 后面讲的混合检索逻辑完全一致。
+
+##### 维度三：成本
+
+Embedding 的成本很容易被低估。建知识库时，你要把**所有文档的所有 chunk 都向量化一遍**；每次用户查询，还要再给 query 算一次向量。调用量往往远超 LLM 对话。
+
+| 模型 | 计费方式 | 参考价格 | 月 1000 万 token 估算 |
+| --- | --- | --- | --- |
+| `BAAI/bge-m3`（硅基流动） | API 免费 | ¥0 | ¥0 |
+| `BAAI/bge-large-zh-v1.5`（硅基流动） | API 免费 | ¥0 | ¥0 |
+| `Qwen/Qwen3-Embedding-8B`（硅基流动） | 按量付费 | 以平台公示为准 | 需查最新定价 |
+| 通义 `text-embedding-v3` | 按 token | ≈ ¥0.7 / 百万 token | ≈ ¥7 |
+| `text-embedding-3-small`（OpenAI） | 按 token | ≈ ¥0.14 / 百万 token | ≈ ¥1.4 |
+| `text-embedding-3-large`（OpenAI） | 按 token | ≈ ¥0.88 / 百万 token | ≈ ¥8.8 |
+| 自部署 `bge-m3` | 服务器固定成本 | GPU 实例月租 | ≈ ¥500–2000 / 月（视规模） |
+
+成本决策的关键不在单价，而在**调用量级、向量维度和部署方式**：
+
+- **学习 / 原型阶段**：硅基流动免费 API + `bge-m3`，零成本跑通全流程，这也是本课程的选择。
+- **月调用量 < 500 万 token**：继续用免费或低价 API 最划算，不值得为省几块钱自建 GPU。
+- **月调用量 > 5000 万 token，或数据不能出内网**：评估自部署。开源模型（`bge-m3`、`Qwen3-Embedding`）自托管后，边际调用成本趋近于零，但你需要承担 GPU 运维。
+- **向量维度直接影响存储成本**：这不是选模型时最显眼的一个参数，却是对账单影响最大的之一。
+
+| 维度 | 单向量大小 | 100 万条数据存储 | 典型模型 | 适合场景 |
+| --- | --- | --- | --- | --- |
+| 384 维 | ≈ 1.5 KB | ≈ 1.5 GB | `all-MiniLM-L6-v2` | 数据量小、边缘部署、FAQ |
+| 768 维 | ≈ 3 KB | ≈ 3 GB | `bge-base-zh-v1.5` | 10 万–100 万条，工程均衡 |
+| 1024 维 | ≈ 4 KB | ≈ 4 GB | `bge-m3`、通义 v3 | 高精度中文 RAG，课程默认 |
+| 3072 维 | ≈ 12 KB | ≈ 12 GB | `text-embedding-3-large` | 英文高精度，存储成本高 |
+
+维度选择的本质是取舍：**精度、存储、检索速度三者不可兼得**。盲目追 3072 维，MTEB 检索分数可能只比 1024 维高 2–3 个点，但存储和检索成本翻倍。部分模型支持 **MRL 降维**（Matryoshka Representation Learning），如 Qwen3 系列可降到 256 维，通义和 OpenAI 也支持 `dimensions` 参数裁剪，在精度损失可控的前提下降低存储开销。注意：MRL 效果因模型训练策略而异，降维前最好在自己的数据上验证。
+
+##### 维度四：延迟
+
+延迟分两个场景：**入库（批量向量化）** 和 **查询（在线 Embedding）**。
+
+| 模型 | 参数量 | 单条延迟（API） | 单条延迟（自部署 GPU） | 吞吐量特点 |
+| --- | --- | --- | --- | --- |
+| `bge-large-zh-v1.5` | 326M | 30–80 ms | 10–30 ms | 轻量，适合高频在线查询 |
+| `bce-embedding-base_v1` | 279M | 30–80 ms | 10–30 ms | 与 bge-large-zh 同级 |
+| `bge-m3` | 568M | 50–150 ms | 20–50 ms | 中等，质量与速度均衡 |
+| `Qwen3-Embedding-0.6B` | 600M | 50–150 ms | 15–40 ms | 小参数达到接近 8B 的质量 |
+| `Qwen3-Embedding-8B` | 8B | 200–500 ms | 50–150 ms | 质量最高，不适合毫秒级在线场景 |
+| `text-embedding-3-small` | 闭源 | 80–200 ms（含网络） | 不适用 | 受 API 网络波动影响 |
+
+延迟选型原则：
+
+- **在线查询延迟敏感**（用户实时提问、Agent 多轮对话）：选 600M 参数以下的模型（`bge-m3`、`bge-large-zh`），单条 Embedding 控制在 100 ms 以内。
+- **离线批量入库**（知识库夜间重建、全量 re-index）：可以用更大模型（`Qwen3-Embedding-8B`），质量优先，延迟不敏感。批量入库时一次传入多条文本（而非逐条调用），吞吐量可以提升一个数量级。
+- **API vs 自部署**：海外 API（OpenAI、Cohere）从国内调用通常有 80–200 ms 的网络开销；国内 API（硅基流动、通义）或自部署能把这个开销降到 30–80 ms。
+- **没有 GPU 的本地环境**：可以用 Ollama 跑 `nomic-embed-text`（137M 参数），CPU 即可运行，适合开发调试，但不适合生产级精度要求。
+
+#### 几个容易被忽略的工程细节
+
+选完模型，还有几个直接影响检索效果的细节：
+
+**1. 入库和查询必须用同一个模型。** 这是最多人踩的坑：知识库写入时用模型 A，查询时换了模型 B，两个向量空间不一致，检索结果会断崖式下降。换模型意味着全量 re-index。
+
+**2. 查询和文档的编码方式可能不同。** 以 `bge-m3` 为例，编码**查询**时应加检索前缀（`prompt_name="query"`），编码**文档**时不加。Jina 系列则用 `task="retrieval.query"` 和 `task="retrieval.passage"` 区分角色。这不是可选项，是模型训练时就设计好的使用方式。
+
+```python
+# BGE-M3 的正确用法：查询和文档分开编码
+from sentence_transformers import SentenceTransformer
+model = SentenceTransformer("BAAI/bge-m3")
+
+doc_embeddings = model.encode(documents, normalize_embeddings=True)
+query_embeddings = model.encode(queries, normalize_embeddings=True, prompt_name="query")
+```
+
+**3. `bge-m3` 自带三种检索模式。** 除了常规的稠密向量（Dense），它还支持稀疏向量（Sparse，类似 BM25 的关键词匹配）和多向量（ColBERT 风格的细粒度匹配）。这意味着 `bge-m3` 一个模型就能做语义与关键词的混合检索，和 D2 后面讲的混合搜索是同一个思路，只是发生在 Embedding 层而非数据库层。
+
+**4. Embedding 负责初筛，Reranker 负责精排。** 工业级 RAG 的常见架构是：Embedding 召回 Top-50~100 候选，再用 Reranker 模型（如 `BAAI/bge-reranker-v2-m3`）精排到 Top-10。实测中，加上 Reranker 后准确率可以从 78% 提升到 91%。Embedding 选型解决的是找得到的问题，Reranker 解决的是排得准的问题。
+
+**5. 缓存和批量处理能省 80% 的成本。** 对文本内容做哈希作为缓存 key，相同 chunk 不重复计算 Embedding；批量入库时一次传入几十上百条文本，比逐条调用 API 高效得多。
+
+#### 选型决策：四步走
+
+把四个维度合在一起，可以按下面的流程快速决策：
+
+```
+你的知识库是什么类型？
+├── 几乎全是纯文本
+│   ├── 中文为主 → bge-m3（免费 API）或 通义 v3（国内 API）
+│   ├── 英文为主 → text-embedding-3-small / Voyage-3
+│   └── 多语言混合 → bge-m3 或 Qwen3-Embedding 系列
+│
+├── 包含大量 PDF / 图表 / 扫描件
+│   ├── 追求最高召回 → ColPali / ColNomic 页面级多向量检索
+│   └── 追求工程简单 → Qwen3-VL-Embedding 或 Gemini Embedding 2
+│
+调用量级和数据合规？
+├── 学习 / 原型 / 月调用 < 500 万 token → 硅基流动免费 bge-m3
+├── 数据不能出内网 → 自部署 bge-m3 或 Qwen3-Embedding
+└── 月调用 > 5000 万 token → 评估自部署，长期成本更低
+
+延迟要求？
+├── 在线实时查询 → bge-m3 / bge-large-zh（< 100 ms）
+└── 离线批量入库 → 可用 Qwen3-Embedding-8B 追求更高质量
+
+最后一步（所有路径都适用）：
+→ 用 20-50 条真实 query 跑 Recall@K + MRR 对比
+→ 搭配 Reranker 做精排
+→ 确认入库和查询使用同一模型
+```
+
+最后一条建议，比看任何排行榜都重要：**用你自己的文档跑一轮对比实验**。拿 20–50 条真实业务查询，分别用 2–3 个候选模型做向量化 + 检索，看 Top-3 命中率和 MRR。排行榜反映通用能力，你的业务数据反映实际效果。
+
+本课程选择 `bge-m3` 作为默认模型，是因为它在中英文能力、成本（免费）、延迟（中等）、API 易用性四个维度上取得了最好的**学习体验平衡**。但当你进入生产环境，上面这套选型框架会帮你找到更适合自己业务的模型。
 
 切分 + 向量化完成后，数据才真正准备好进入数据库。接下来的问题才是：**用什么数据库存，用什么方式查？**
 
@@ -498,6 +688,7 @@ D4 你会在同一个数据层上构建记忆系统——记忆的存储、检�
 
 如果你对本期提到的概念想做进一步了解，以下是一些推荐资源：
 
+- **Embedding 模型选型与评测**：[MTEB Leaderboard](https://huggingface.co/spaces/mteb/leaderboard)，全球主流的 Embedding 模型评测基准，做 RAG 检索时重点看 Retrieval 子任务得分；[MMEB Leaderboard](https://huggingface.co/spaces/TIGER-Lab/MMEB-Leaderboard)，多模态 Embedding 评测；[硅基流动 Embedding API 文档](https://docs.siliconflow.cn/cn/api-reference/embeddings/create-embeddings)，本课程使用的 API 平台，支持 `bge-m3`、`Qwen3-Embedding` 及多模态 `Qwen3-VL-Embedding` 等模型
 - **向量搜索的原理**：[What are Vector Embeddings?](https://www.pinecone.io/learn/vector-embeddings/)，Pinecone 的入门教程，直观解释了 Embedding 和向量搜索的工作方式
 - **BM25 与全文检索**：[Understanding BM25](https://www.elastic.co/blog/practical-bm25-part-2-the-bm25-algorithm-and-its-variables)，Elastic 的技术博客，解释了全文搜索背后的经典算法
 - **RRF 融合算法**：混合搜索中如何将向量分数和全文分数合并为统一排名，Reciprocal Rank Fusion 是业界常用的方案——D3 的延伸阅读会展开这个话题
