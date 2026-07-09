@@ -8,6 +8,9 @@ langchain-core>=0.3.29
 # 环境变量管理
 python-dotenv>=1.2.2
 
+# OpenAI 兼容 API 客户端（用于 SiliconFlow Embedding 调用）
+openai>=1.0.0
+
 # 向量数据库（可选，用于 d1_5 和 d1_6）
 pyseekdb>=1.2.0.post1
 

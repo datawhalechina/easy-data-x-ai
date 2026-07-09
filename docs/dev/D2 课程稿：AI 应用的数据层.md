@@ -8,12 +8,13 @@
 
 ```
 # ============================================================
-# 示例代码简介：从 d2_1 到 d2_4 的演进
+# 示例代码简介：从 d2_1 到 d2_5 的演进
 #
 # d2_1  数据写入      → 文档切分、向量化并写入 seekdb
 # d2_2  向量搜索      → 纯向量搜索示例
 # d2_3  混合搜索      → 向量 + 全文 + 结构化过滤
 # d2_4  对比实验      → 纯向量 vs 混合搜索结果对比
+# d2_5  分块对比      → 语义分块 / 动态 overlap / 父子 chunk 策略实验
 # ============================================================
 ```
 
@@ -90,6 +91,161 @@ def chunk_document(text: str, chunk_size: int = 500, overlap: int = 50) -> list[
 | 片段不要太长 | 500~800 字是常见范围，太长语义稀释，太短上下文不足 |
 | 保留重叠 | 相邻片段保留 50~100 字的重叠，避免关键信息落在边界 |
 | 保留元数据 | 每个片段记录来源文档、章节、更新时间等，用于后续结构化过滤 |
+
+上面这套固定大小 + 固定 overlap 的分块方式，足够帮你跑通第一个 RAG 原型。但当你把知识库从几十条 FAQ 扩展到几百页技术手册，很快就会碰到一类新问题：**检索召回对了，上下文却断了**——或者反过来，上下文完整，检索却找不到精确片段。
+
+下面三种进阶策略，就是针对这类边界场景设计的。它们不替代基础分块，而是在你确认基础方案遇到瓶颈之后的升级选项。
+
+### 进阶 Chunking 策略
+
+#### 策略一：语义分块（Semantic Chunking）
+
+固定大小分块有一个先天缺陷：它按字符数切，不管语义边界在哪。比如一段关于「错误码 E-4012」的说明，可能被切成两半：前半段进了 chunk A，后半段进了 chunk B。用户问「E-4012 怎么解决」，检索可能只命中半句话。
+
+**语义分块**的思路是：先按句子切开，给每个句子算 Embedding，再比较相邻句子的余弦相似度。当相似度出现「异常下跌」，说明话题发生了跳变，则可以在那插入断点，把前后句子分到不同 chunk。
+
+```python
+# 语义分块的核心逻辑（简化示意）
+sentences = split_sentences(long_document)
+embeddings = embed_batch(sentences)  # 每句一个向量
+
+# 计算相邻句相似度，在跌幅超过阈值处切分
+similarities = [cosine(embeddings[i], embeddings[i+1]) for i in range(len(sentences)-1)]
+breakpoints = find_breakpoints(similarities, percentile=95)  # 第 95 分位视为话题跳变
+chunks = group_sentences(sentences, breakpoints)
+```
+
+那「异常下跌」到底多大算异常？如果写死一个固定数值（比如相似度跌幅超过 0.3 就切），不同类型文档的表现会差很多——技术手册整体跌幅偏小，可能几乎不切；散文整体跌幅偏大，又可能切得太碎。更稳妥的做法是用 **percentile 阈值**：先把这篇文档里所有相邻句的相似度跌幅排个序，取第 95 分位作为切分线——只有跌幅排进全文最靠前的 5%，才判定为话题跳变。这样阈值跟着当前文档自己的分布走，而不是硬套一个全局常数。
+
+LangChain 的 `SemanticChunker`（位于 `langchain-experimental` 包）目前默认就是这套 percentile 方案，分位值 95，与上面代码示意一致。实际调参时常在 90–95 之间微调：切得太碎就调高，话题粘连就调低。这与 NAACL 2025 论文 [*Is Semantic Chunking Worth the Computational Cost?*](https://aclanthology.org/2025.findings-naacl.114.pdf) 中 breakpoint-based 语义分块器的思路一致。
+
+但代价也实实在在：入库时需要对**每个句子**调用一次 Embedding API。一篇 500 页的文档可能产生数万次 API 调用，计算成本远高于固定分块。2025–2026 年的多项 benchmark（如 [Yoke Agent 的分块评测](https://yoke-agent.digital/blog/benchmarking-chunking-strategies/)）显示：
+
+- 对 **Markdown / 技术文档** 这类结构清晰的内容，带 overlap 的递归分块往往就能拿到很好的效果，语义分块提升有限
+- 对 **话题频繁切换的散文、新闻、会议纪要**，语义分块通常能带来 2–5 个点的 Recall 提升
+- 阈值没调好会导致**过度碎片化**（平均 chunk 只有几十个 token），检索精度反而下降
+
+所以语义分块适用于结构不清晰、话题跳跃的长文，作为「基础分块效果不够好」时的优化手段。
+
+#### 策略二：动态 Overlap（Dynamic Overlap）
+
+固定 overlap 有一个隐含假设：文档每个位置的「边界风险」是一样的。实际上并非如此——章节标题、段落换行、表格前后的语义密度完全不同。在标题处切一刀，丢上下文的概率远高于段落中间。
+
+**动态 overlap** 的做法是：保持 chunk 大小基本不变，但根据内容特征**动态调整重叠量**：
+
+| 区域类型 | overlap 策略 | 原因 |
+| --- | --- | --- |
+| 同质段落内部 | 较小 overlap（如 10%） | 减少冗余，降低存储和检索噪声 |
+| 段落边界、标题行附近 | 较大 overlap（如 25–30%） | 保护跨边界的完整语义 |
+| 代码块、表格前后 | 适当加大 overlap | 避免结构信息被切断 |
+
+```python
+# 动态 overlap 示意：边界附近加大重叠
+boundaries = detect_boundaries(text)  # 段落空行、Markdown 标题等
+
+while start < len(text):
+    end = start + chunk_size
+    overlap = max_overlap if near_boundary(end, boundaries) else base_overlap
+    start += chunk_size - overlap
+```
+
+Weaviate（开源向量数据库厂商）2024 年发布的技术博客 [Chunking Strategies to Improve LLM RAG Pipeline Performance](https://weaviate.io/blog/chunking-strategies-for-rag) 将这类方法归为 **Adaptive Chunking**，即不换分块算法，只让 overlap 和步长随内容结构自适应。Yoke Agent 团队在 2026 年初做的分块策略对比实验([Benchmarking chunking strategies on a real corpus](https://yoke-agent.digital/blog/benchmarking-chunking-strategies/) )显示，在 512 token 分块上仅增加 64 token 的 overlap，Recall 就能提升约 4 个百分点，与换用更大 Embedding 模型的收益同量级，但**入库成本几乎为零**。这个实验证明了动态 overlap 的高性价比。
+
+动态 overlap 的适用的是已经有固定大小分块、不想引入 Embedding 额外开销，但边界召回率不理想的场景。这是三种策略里**性价比最高**的升级路径。
+
+#### 策略三：父子 Chunk（Parent-Child / Small-to-Big）
+
+前两种策略解决的是「怎么切」。父子 chunk 解决的是另一个矛盾：
+
+- **小块**检索精准，但塞给 LLM 时上下文不够——半句话说不清来龙去脉
+- **大块**上下文完整，但向量语义被「稀释」，检索时找不到精确片段
+
+父子 chunk 的核心思路是**把索引粒度和返回粒度解耦**：
+
+```
+原始文档
+  └── 父 chunk（500 字，存入 docstore，不建向量索引）
+        ├── 子 chunk A（120 字，建向量索引）
+        ├── 子 chunk B（120 字，建向量索引）
+        └── 子 chunk C（120 字，建向量索引）
+
+查询时：用子 chunk 做向量检索 → 命中后取 parent_id → 返回父 chunk 给 LLM
+```
+
+业界把这套做法叫做 **small-to-big retrieval**（检索用小块、生成用大块）或 **parent-document retrieval**（按父文档返回上下文）。名字不同，核心都是把“搜到什么”和“给 LLM 什么”分开。LangChain 的 `ParentDocumentRetriever`、LlamaIndex 的 `HierarchicalNodeParser` + `AutoMergingRetriever` 走的都是这条路：向量库只索引子块，父块存在独立的 docstore 里按 ID 关联，检索命中子块后再取回父块。LlamaIndex 还支持多层级合并，子块命中比例够高时才升级为更大的父块，比 LangChain 的两层方案更灵活一些。
+
+```python
+# 父子分块的数据关系
+parents = parent_child_chunk(
+    long_document,
+    parent_size=500,   # 给 LLM 的上下文单位
+    child_size=120,    # 向量检索单位
+)
+
+# 入库时只索引子块，但元数据里带上 parent_id 和 parent_text
+for parent in parents:
+    for child in parent.children:
+        vector_db.add(
+            text=child.text,
+            metadata={"parent_id": parent.parent_id, "parent_text": parent.text}
+        )
+
+# 检索时：命中子块 → 返回父块文本
+results = vector_db.query(query)
+context_for_llm = [r.metadata["parent_text"] for r in results]
+```
+
+在需要多跳推理或跨段落理解的场景（如「比较 E-4011 和 E-4012 的处理差异」），父子 chunk 的优势尤其明显：子块帮你定位到精确段落，父块给 LLM 足够的上下文做综合回答。社区 benchmark 普遍报告 **15–30%** 的答案完整度提升，代价是 LLM 侧 token 消耗随父块大小同比增加。
+
+当文档有清晰章节结构、查询需要完整上下文才能回答、且你愿意用更多 LLM token 换更好答案的生产系统的时候，可以使用考虑使用父子分块。
+
+#### 三种策略怎么选？
+
+不要试图找一个永远最优的策略，chunk 大小、overlap、分块算法都没有标准答案，得根据你自己的文档和查询试出来。下面是一张实用的决策表，可供参考：
+
+| 你的情况 | 推荐策略 | 理由 |
+| --- | --- | --- |
+| 刚起步 / 文档量小 | 固定 overlap（d2_1 默认方案） | 简单、零额外成本、足够跑通 |
+| Markdown / API 文档 / 结构清晰 | 固定 overlap + 按标题预切 | 结构信号比语义 Embedding 更可靠 |
+| 边界处经常丢上下文 | 动态 overlap | 成本最低的有效升级 |
+| 话题跳跃的无结构长文 | 语义分块 | 按语义边界切，避免硬切 |
+| 检索准但 LLM 答不全 | 父子 chunk | 小块检索 + 大块生成 |
+| 多种文档类型混合 | 按文档类型路由不同策略 | 异构语料没有 one-size-fits-all |
+
+最新的研究趋势也在朝「自适应」方向走——2026 年的 Query-Adaptive Semantic Chunking（[QASC](https://arxiv.org/abs/2605.22834)）尝试把用户查询意图融入分块阶段，在特定场景下比固定语义分块再高 8–12 个百分点。但对大多数团队来说，**先用 d2_5 跑一轮对比实验**，比追新论文更有价值。
+
+#### 动手对比：d2_5 实验
+
+课程代码 `d2_5_chunking_compare.py` 用一份多章节的数据库运维手册，对四种策略（固定 overlap 基线 + 上述三种高级策略）跑同一组查询，统计 **Recall@3**：
+
+```bash
+cd easy-data-x-ai/code
+python D2/d2_5_chunking_compare.py
+```
+
+你会看到类似下面的输出（具体数字因检索后端、Embedding 模型和阈值设置会有波动）：
+
+```
+  策略               块数     均长   Recall@3
+  --------------------------------------------
+  固定 overlap          5     186字      80%
+  动态 overlap          6     185字      80%
+  父子 chunk            9     104字      80%
+  语义分块              7     310字      80%   # 需 API Key
+```
+
+数字因 Embedding 模型和阈值设置会有波动，但实验想说明的趋势是稳定的：
+
+1. **固定 overlap 在章节边界处容易丢召回**：执行计划分析这类跨段信息被切散后，Top-3 里凑不齐完整答案
+2. **动态 overlap 用极低成本改善了边界召回**：只在标题和段落边界加大重叠，不需要额外 API 调用
+3. **语义分块让每个 chunk 更完整**：每个块围绕单一话题，均长更大、块数更少，适合话题切换频繁的手册
+4. **父子 chunk 用子块精准定位、父块补全上下文**：Recall 未必最高，但返回给 LLM 的上下文最完整，适合后续生成环节
+
+语义分块需要配置 `SILICONFLOW_API_KEY`（与课程 Embedding 示例一致）。没有 API Key 时脚本会跳过语义分块，其余三种策略仍可正常运行。
+
+另外请分清两个阶段：`seekdb` 嵌入式模式不可用时，脚本只会把**检索后端**降级为内存词项匹配，不影响语义分块阶段调用硅基流动 Embedding API。也就是说，配置了 API Key 后，即便本地没有可用的 seekdb，语义分块对比仍会执行。
+
+> **实践建议**：chunk 策略、chunk 大小、overlap 和 Embedding 模型一样，都值得你在自己的数据上对比试出来。拿 20–50 条真实 query 跑一轮 Recall@K，比看任何排行榜都靠谱。这一点和接下来将讨论的 Embedding 选型的思路完全一致。
 
 ### 向量化：把文字变成数字
 
@@ -677,7 +833,9 @@ D4 你会在同一个数据层上构建记忆系统——记忆的存储、检�
 
 1. **跑通 Notebook**：运行本模块的代码，五分钟内完成你的第一个混合查询。确认向量搜索和全文搜索各自的命中情况。
 
-2. **换成你自己的数据**：这才是关键一步。找几份你实际项目中的文档——产品文档、API 文档、内部 Wiki，什么都行。把它们存入 seekdb，然后用你日常工作中会问的问题去查询。感受一下：
+2. **跑分块对比实验**：运行 `d2_5_chunking_compare.py`，观察固定 overlap、语义分块、动态 overlap、父子 chunk 四种策略的 Recall@3 差异。如果配置了 API Key，四种策略都会跑；否则先对比后三种中的两个（动态 overlap + 父子 chunk）。
+
+3. **换成你自己的数据**：这才是关键一步。找几份你实际项目中的文档——产品文档、API 文档、内部 Wiki，什么都行。把它们存入 seekdb，然后用你日常工作中会问的问题去查询。感受一下：
    - 哪些查询是向量搜索命中、全文搜索没命中的？（语义理解的价值）
    - 哪些查询是全文搜索命中、向量搜索漏掉或排错的？（精确匹配的价值）
    - 有没有查询是两者结合才给出最佳结果的？
@@ -689,6 +847,7 @@ D4 你会在同一个数据层上构建记忆系统——记忆的存储、检�
 如果你对本期提到的概念想做进一步了解，以下是一些推荐资源：
 
 - **Embedding 模型选型与评测**：[MTEB Leaderboard](https://huggingface.co/spaces/mteb/leaderboard)，全球主流的 Embedding 模型评测基准，做 RAG 检索时重点看 Retrieval 子任务得分；[MMEB Leaderboard](https://huggingface.co/spaces/TIGER-Lab/MMEB-Leaderboard)，多模态 Embedding 评测；[硅基流动 Embedding API 文档](https://docs.siliconflow.cn/cn/api-reference/embeddings/create-embeddings)，本课程使用的 API 平台，支持 `bge-m3`、`Qwen3-Embedding` 及多模态 `Qwen3-VL-Embedding` 等模型
+- **Chunking 策略与评测**：[Weaviate · Chunking Strategies for RAG](https://weaviate.io/blog/chunking-strategies-for-rag)，涵盖固定分块、语义分块、自适应 overlap 等策略的系统梳理；[Firecrawl · Best Chunking Strategies for RAG in 2026](https://www.firecrawl.dev/blog/best-chunking-strategies-rag)，七种策略的代码示例与选型建议；[NAACL 2025 · Is Semantic Chunking Worth the Computational Cost?](https://aclanthology.org/2025.findings-naacl.114.pdf)，语义分块计算成本与效果的学术评测；[LangChain SemanticChunker API](https://api.python.langchain.com/en/latest/text_splitter/langchain_experimental.text_splitter.SemanticChunker.html)，percentile 阈值语义分块的工程实现
 - **向量搜索的原理**：[What are Vector Embeddings?](https://www.pinecone.io/learn/vector-embeddings/)，Pinecone 的入门教程，直观解释了 Embedding 和向量搜索的工作方式
 - **BM25 与全文检索**：[Understanding BM25](https://www.elastic.co/blog/practical-bm25-part-2-the-bm25-algorithm-and-its-variables)，Elastic 的技术博客，解释了全文搜索背后的经典算法
 - **RRF 融合算法**：混合搜索中如何将向量分数和全文分数合并为统一排名，Reciprocal Rank Fusion 是业界常用的方案——D3 的延伸阅读会展开这个话题
