@@ -38,7 +38,8 @@ class Config:
     def check_api_key(cls, key_name="SILICONFLOW_API_KEY"):
         """检查 API Key 是否已配置"""
         key = getattr(cls, key_name)
-        if key == "YOUR_API_KEY" or not key:
+        template_value = f"your_{key_name.lower()}_here"
+        if key in {"YOUR_API_KEY", template_value} or not key:
             print(f"⚠️  警告: {key_name} 未配置！")
             print(f"请在 code/.env 文件中设置 {key_name}")
             return False
