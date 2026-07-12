@@ -1,0 +1,88 @@
+report:
+  currency: CNY
+  horizon_months: 12
+
+scenarios:
+  conservative:
+    description: "低业务量、较高转人工率和较高单任务模型成本下的预期。"
+    metrics:
+      monthly_task_count: 80
+      agent_handoff_rate: 0.35
+      agent_task_success_rate: 0.68
+      agent_risk_event_rate: 0.07
+      agent_variable_cost_per_task: 2.5
+    costs:
+      data:
+        initial_preparation_cost: 1200
+        monthly_maintenance_cost: 120
+      model:
+        initial_evaluation_cost: 600
+        monthly_fixed_cost: 260
+      business:
+        initial_integration_cost: 1600
+        initial_training_cost: 700
+        monthly_operations_cost: 320
+    business_baseline:
+      baseline_human_handling_rate: 1.0
+      human_cost_per_task: 10
+      baseline_task_success_rate: 0.60
+      value_per_incremental_successful_task: 20
+      baseline_risk_event_rate: 0.10
+      risk_loss_per_event: 100
+      monthly_efficiency_gain: 50
+
+  base:
+    description: "课程案例的基准情景：100 个任务/月，AI 解决 80% 的人工服务需求。"
+    metrics:
+      monthly_task_count: 100
+      agent_handoff_rate: 0.20
+      agent_task_success_rate: 0.80
+      agent_risk_event_rate: 0.04
+      agent_variable_cost_per_task: 2
+    costs:
+      data:
+        initial_preparation_cost: 1200
+        monthly_maintenance_cost: 100
+      model:
+        initial_evaluation_cost: 600
+        monthly_fixed_cost: 200
+      business:
+        initial_integration_cost: 1600
+        initial_training_cost: 600
+        monthly_operations_cost: 300
+    business_baseline:
+      baseline_human_handling_rate: 1.0
+      human_cost_per_task: 10
+      baseline_task_success_rate: 0.60
+      value_per_incremental_successful_task: 20
+      baseline_risk_event_rate: 0.10
+      risk_loss_per_event: 100
+      monthly_efficiency_gain: 100
+
+  optimistic:
+    description: "业务量增长、Agent 质量提升且单位调用成本下降后的预期。"
+    metrics:
+      monthly_task_count: 140
+      agent_handoff_rate: 0.12
+      agent_task_success_rate: 0.88
+      agent_risk_event_rate: 0.02
+      agent_variable_cost_per_task: 1.6
+    costs:
+      data:
+        initial_preparation_cost: 1200
+        monthly_maintenance_cost: 100
+      model:
+        initial_evaluation_cost: 600
+        monthly_fixed_cost: 180
+      business:
+        initial_integration_cost: 1600
+        initial_training_cost: 600
+        monthly_operations_cost: 300
+    business_baseline:
+      baseline_human_handling_rate: 1.0
+      human_cost_per_task: 10
+      baseline_task_success_rate: 0.60
+      value_per_incremental_successful_task: 20
+      baseline_risk_event_rate: 0.10
+      risk_loss_per_event: 100
+      monthly_efficiency_gain: 150

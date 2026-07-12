@@ -14,6 +14,7 @@ code/
 ├── D3/                # Agentic RAG 实战
 ├── D4/                # Agent 开发与记忆系统
 ├── D5/                # 课程总结
+├── P5/                # 综合案例：AI Agent ROI 计算模型
 ├── X2/                # 扩展篇：Skill 结构化管理与按需加载
 └── X5/                # 扩展篇：从 Skill 到 MCP Tool
 ```
