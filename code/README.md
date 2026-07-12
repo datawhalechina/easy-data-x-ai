@@ -44,6 +44,8 @@ SILICONFLOW_API_KEY=your_siliconflow_api_key_here
 DASHSCOPE_API_KEY=your_dashscope_api_key_here
 ```
 
+`config.py` 会优先读取 `code/.env`；如果该文件不存在，会继续向上查找父目录中的 `.env`（例如仓库根目录 `.env`）。系统环境变量优先级更高，不会被 `.env` 中的同名变量覆盖。
+
 ### 3. 运行示例
 
 ```bash

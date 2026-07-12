@@ -5,12 +5,29 @@
 import os
 from pathlib import Path
 
+
+def _find_env_file(start_dir=None):
+    """从指定目录开始向上查找 .env 文件，优先使用更靠近代码目录的配置。"""
+    current_dir = Path(start_dir or Path(__file__).resolve().parent).resolve()
+
+    for directory in (current_dir, *current_dir.parents):
+        env_path = directory / ".env"
+        if env_path.is_file():
+            return env_path
+
+        if (directory / ".git").exists():
+            break
+
+    return None
+
+
 # 尝试加载 python-dotenv
 try:
     from dotenv import load_dotenv
-    # 加载 .env 文件（从当前目录或父目录）
-    env_path = Path(__file__).parent / '.env'
-    load_dotenv(env_path)
+    # 加载 .env 文件（优先 code/.env，找不到时向上查找父目录）
+    env_path = _find_env_file()
+    if env_path is not None:
+        load_dotenv(env_path)
     DOTENV_AVAILABLE = True
 except ImportError:
     DOTENV_AVAILABLE = False
@@ -41,7 +58,7 @@ class Config:
         template_value = f"your_{key_name.lower()}_here"
         if key in {"YOUR_API_KEY", template_value} or not key:
             print(f"⚠️  警告: {key_name} 未配置！")
-            print(f"请在 code/.env 文件中设置 {key_name}")
+            print(f"请在 code/.env 或仓库根目录 .env 文件中设置 {key_name}")
             return False
         return True
 
