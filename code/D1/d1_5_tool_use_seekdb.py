@@ -1,5 +1,7 @@
 import sys
-sys.path.append('..')  # 添加父目录到路径以导入 config
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from config import Config
 import pyseekdb
 from langchain.chat_models import init_chat_model
