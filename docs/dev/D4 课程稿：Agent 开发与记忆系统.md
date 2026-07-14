@@ -394,6 +394,142 @@ def build_prompt_with_memory(user_input):
 
 你不需要关心这些内部细节。从使用者的角度，`memory.search()` 和 `memory.add()` 就是你需要的全部 API。
 
+## 第五部分：多用户 / 多租户记忆隔离
+
+到这里，你的 Agent 已经能记住一个人了。但真实产品几乎从不上线“只有一个用户”的 Agent。
+
+想象你做了一个技术问答机器人，Alice 和 Bob 都在用。Alice 说：“我是 Python 开发者，过敏原是花生。”Bob 说：“我是 Java 开发者，喜欢详细解释。”
+
+如果记忆库里没有隔离——下一次 Bob 问“推荐个 Web 框架”，Agent 可能答：“推荐 FastAPI，顺便别碰花生。”
+
+这不是“个性化过头”，这是**数据串户**。多用户场景下，记忆系统的第一个硬要求不是“记得更聪明”，而是：**谁的记忆，只能被谁看见、被谁改。**
+
+### 问题本质：共享存储 + 独立视图
+
+工程上，多用户记忆通常共用同一套存储（同一张表、同一个向量库），靠命名空间把视图切开。PowerMem 的做法是把隔离键做成存储层的一等公民：
+
+```
+user_id  →  agent_id  →  run_id
+```
+
+- `user_id`：用户 / 租户维度（多用户隔离的主键）
+- `agent_id`：Agent 维度（同一用户下，不同 Agent 也可再隔离）
+- `run_id`：会话维度（可选，用于单次任务上下文）
+
+关键点不在存的时候写上 user_id，而在**查的时候必须带着 user_id 过滤**。PowerMem 在构建查询时就把这些字段注入过滤条件，等价于 SQL 里的：
+
+```sql
+WHERE user_id = 'alice' AND agent_id = 'tech_assistant'
+```
+
+过滤发生在数据库索引层，而不是“先全库搜一遍，再在应用代码里丢掉别人的记忆”。后者更慢，也更容易把别人的数据打进日志。
+
+### user_id 命名空间：写入带标签，检索带过滤
+
+第三部分的示例里，你已经写过 `PowerMem(user_id="developer_001")`。那一行看起来像初始化参数，本质上是在告诉记忆层：**之后所有读写，默认都落在这个命名空间里。**
+
+更显式的写法是每次调用都传入 `user_id`：
+
+```python
+from powermem import Memory, auto_config
+
+memory = Memory(config=auto_config())
+
+# Alice 的记忆写入 alice 命名空间
+memory.add(
+    "用户是 Python 开发者，喜欢简洁回答",
+    user_id="alice",
+    agent_id="tech_assistant",
+)
+
+# Bob 的记忆写入 bob 命名空间
+memory.add(
+    "用户是 Java 开发者，喜欢详细解释",
+    user_id="bob",
+    agent_id="tech_assistant",
+)
+
+# 检索时必须带上 user_id——否则就失去了隔离边界
+alice_hits = memory.search("推荐 Web 框架", user_id="alice")
+bob_hits = memory.search("推荐 Web 框架", user_id="bob")
+```
+
+`alice_hits` 里不应出现 Bob 的 Java 偏好；`bob_hits` 里也不应出现 Alice 的 Python 偏好。同一套 Agent 代码、同一套存储，靠 `user_id` 切成两个互不可见的记忆视图。
+
+多租户场景同理：把 `user_id` 理解成租户 ID（或 `tenant_id:user_id` 组合键）即可。隔离规则不变——**命名空间是边界，不是建议。**
+
+### 权限校验：隔离不够，还要拦越权操作
+
+命名空间解决的是“看不见”。但真实系统还有写操作：更新、删除、分享。如果 Bob 拿到了 Alice 某条记忆的 ID，能不能删掉它？
+
+答案必须是：**不能。** 所有权校验要发生在操作入口，而不是事后补救。
+
+PowerMem 多用户模式下的基本规则很直接：
+
+| 操作 | 本人记忆 | 他人记忆（未授权） | 他人记忆（已显式分享且授权） |
+| --- | --- | --- | --- |
+| 读 / 搜 | ✅ | ❌（命名空间过滤） | ✅（按授权权限） |
+| 更新 | ✅ | ❌ `PermissionError` | 仅当授予 write |
+| 删除 | ✅ | ❌ `PermissionError` | ❌（通常仅所有者） |
+
+用伪代码表达权限门：
+
+```python
+def delete_memory(store, memory_id, requester_id):
+    memory = store.get(memory_id)
+    if memory is None:
+        raise ValueError(f"Memory {memory_id} not found")
+
+    # 权限校验：只有所有者可以删除
+    if memory["user_id"] != requester_id:
+        raise PermissionError(
+            f"User {requester_id} cannot delete memory owned by {memory['user_id']}"
+        )
+
+    store.remove(memory_id)
+    return {"success": True, "deleted_id": memory_id}
+```
+
+注意两件事：
+
+1. **先鉴权，再改数据。** 不要先删再判断。
+2. **失败要显式。** 用 `PermissionError` / 403，而不是静默成功——静默会让调用方以为“删掉了”，实际留下脏状态。
+
+如果业务需要跨用户共享（比如客服 Agent 把一条偏好分享给销售 Agent 对应的用户视图），必须走显式授权：记录 `shared_with` 和权限列表（`read` / `write`），读路径按授权放行，写路径仍默认拒绝。
+
+### 接到 Agent 循环里长什么样
+
+回到第三部分的记忆 Agent：以前是“一个全局 memory”，现在每个请求都要绑定当前登录用户：
+
+```python
+def chat_with_memory(user_input, current_user_id):
+    # 推理前：只检索当前用户命名空间里的记忆
+    memories = memory.search(query=user_input, user_id=current_user_id, top_k=5)
+    memory_text = "\n".join([m["content"] for m in memories])
+
+    system_prompt = f"""你是一个友好的技术助手。
+
+你对这位用户有以下了解：
+{memory_text if memory_text else "暂无已知信息。"}
+"""
+
+    reply = llm_chat(system_prompt, user_input)
+
+    # 推理后：新记忆必须写入当前用户命名空间
+    memory.add(
+        messages=[
+            {"role": "user", "content": user_input},
+            {"role": "assistant", "content": reply},
+        ],
+        user_id=current_user_id,
+    )
+    return reply
+```
+
+`current_user_id` 从哪来？从你的鉴权层来——登录态、API Token、租户上下文。**绝不要让前端随便传一个 user_id 就信。** 记忆隔离的前提是：请求身份可信。
+
+配套可运行示例见 `code/D4/d4_5_multi_user_isolation.py`：用纯 Python 模拟命名空间过滤与权限门，不依赖外部 API，可以直接跑通 Alice / Bob 互不可见、越权删除被拒绝这两条核心断言。
+
 ## 我们的思考
 
 记忆系统看起来是个 AI 问题，但拆到底是个数据问题——怎么存、怎么查、怎么过期。
@@ -410,7 +546,9 @@ def build_prompt_with_memory(user_input):
 
 这个数据说明了一件反直觉的事：**把所有信息都“记住”，效果反而不如有选择地记忆。** 信息过载会干扰检索——当上下文中塞满了过时的、无关的信息，模型反而找不到真正有用的那几条。
 
-PowerMem 封装了这些最佳实践。安装 `powermem` 之后，几十行代码就能给你的 Agent 加上智能记忆——自动提取关键事实、混合检索召回相关记忆、艾宾浩斯曲线管理时效性。你不需要自己实现这些机制，但你需要理解它们背后的逻辑——因为当记忆系统表现不够好的时候，问题几乎一定出在这三个环节中的某一个。
+还有一层经常被忽略的数据边界：**多用户场景下，“记对了”之前，先要“记在正确的命名空间里”。** `user_id` 过滤和权限校验看起来像安全需求，本质上仍是数据层问题——共享存储如何切出互不串扰的视图，以及写操作如何在入口处拦住越权。没有隔离的记忆系统，个性化越强，串户风险越大。
+
+PowerMem 封装了这些最佳实践。安装 `powermem` 之后，几十行代码就能给你的 Agent 加上智能记忆——自动提取关键事实、混合检索召回相关记忆、艾宾浩斯曲线管理时效性，以及按 `user_id` 做多用户隔离。你不需要自己实现这些机制，但你需要理解它们背后的逻辑——因为当记忆系统表现不够好的时候，问题几乎一定出在“记 / 忘 / 想起 / 隔离”这几个环节中的某一个。
 
 ## 动手体验：构建你的记忆 Agent
 
@@ -499,7 +637,7 @@ while True:
 
 如果这节课的所有内容你只记住一句话，记住这句：
 
-> **给 Agent 加记忆，难的不是代码——难的是该记什么、该忘什么、该想起什么。这三个问题，本质上都是数据处理和检索的问题。**
+> **给 Agent 加记忆，难的不是代码——难的是该记什么、该忘什么、该想起什么。而一旦有了多个用户，还要先保证：该记的只记在属于他的命名空间里，别人既看不见，也改不了。**
 
 ## 课后行动
 
@@ -515,6 +653,8 @@ while True:
    然后在后续对话中，观察 Agent 是否在合适的时候自然地调用了这些信息。它有没有在你问 Web 框架时优先推荐 Python 的？有没有在你问部署方案时默认用 AWS 的？有没有记住你说过喜欢简洁、实际给出简洁的回答？
 
 3. **对比体验**：用同样的对话序列分别测试“有记忆”和“无记忆”版本，直观感受差距。
+
+4. **多用户隔离实验**：运行 `d4_5_multi_user_isolation.py`，确认 Alice / Bob 的记忆互不可见，并验证 Bob 无法删除 Alice 的记忆。然后试着故意去掉 `user_id` 过滤，观察“串户”是怎么发生的——体会为什么过滤必须发生在查询构建阶段。
 
 ## 延伸阅读
 
