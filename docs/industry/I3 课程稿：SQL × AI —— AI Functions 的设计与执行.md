@@ -876,7 +876,6 @@ AI 函数按表达式实际求值。一条多行查询可能产生数百或数�
 
 ## 参考资料
 
-- [AI 函数](https://yuque.antfin.com/ob/sr0nh6/gqlvpfqb3445vmau)；
 - [seekdb GitHub](https://github.com/oceanbase/seekdb)；
 - [AI 函数服务语法及示例](https://www.oceanbase.com/docs/common-oceanbase-database-cn-1000000004476158)。
 

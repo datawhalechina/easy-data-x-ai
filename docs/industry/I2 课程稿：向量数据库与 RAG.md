@@ -656,8 +656,6 @@ RAG 提供外部证据，但检索可能漏召回，模型也可能误读或忽�
 
 ## 参考资料
 
-- [为什么要向量数据库（远智）](https://yuque.antfin.com/ob/gtuwei/lkf9zfabreofuhkq)；
-- [向量数据库产品调研](https://yuque.antfin.com/ob/gtuwei/astqstlmb12nyt8o)；
 - [seekdb GitHub](https://github.com/oceanbase/seekdb)；
 - [pgvector GitHub](https://github.com/pgvector/pgvector)；
 - [Milvus 文档](https://milvus.io/docs)。
