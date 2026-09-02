@@ -8,6 +8,11 @@ on:
 
 permissions:
   contents: write
+  pull-requests: read
+
+concurrency:
+  group: update-contributors-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   update:
@@ -23,6 +28,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 24
+
+      - name: Test contributor wall
+        run: npm run contributors:test
 
       - name: Refresh contributor wall
         env:

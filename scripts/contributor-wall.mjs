@@ -21,6 +21,19 @@ export function buildWall(contributors) {
     // (e.g. "xschen-beb"): U+2011 non-breaking hyphen + &nbsp;. Truncation
     // above is then the single, uniform overflow rule.
     const noWrapLogin = displayedLogin.replace(/-/g, '‑').replace(/ /g, '&nbsp;');
+    const contributionLines = [];
+
+    if (contributor.commitCount > 0) {
+      contributionLines.push(
+        `${contributor.commitCount} commit${contributor.commitCount === 1 ? '' : 's'}`,
+      );
+    }
+
+    if (contributor.mergedPrCount > 0) {
+      contributionLines.push(
+        `${contributor.mergedPrCount} merged PR${contributor.mergedPrCount === 1 ? '' : 's'}`,
+      );
+    }
 
     return [
       '<td align="center" valign="top" width="104">',
@@ -28,7 +41,7 @@ export function buildWall(contributors) {
       `    <img src="${contributor.avatarUrl}" width="72" height="72" alt="${contributor.login}" style="border-radius:50%;" />`,
       '  </a><br />',
       `  <a href="${contributor.profileUrl}" title="打开 ${contributor.login} 的 GitHub 主页"><kbd><strong>${noWrapLogin}</strong></kbd></a><br />`,
-      `  <sub>${contributor.contributions} commit${contributor.contributions === 1 ? '' : 's'}</sub>`,
+      `  <sub>${contributionLines.join('<br />')}</sub>`,
       '</td>',
     ].join('\n');
   });

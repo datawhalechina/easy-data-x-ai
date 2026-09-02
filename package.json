@@ -8,6 +8,7 @@
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs",
+    "contributors:test": "node --test scripts/contributors-data.test.mjs scripts/contributor-wall.test.mjs",
     "contributors:update": "node scripts/update-contributors.mjs"
   },
   "dependencies": {
