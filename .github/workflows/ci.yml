@@ -32,6 +32,9 @@ jobs:
       - name: Check documentation references
         run: npm run docs:check
 
+      - name: Test contributor wall
+        run: npm run contributors:test
+
       - name: Build docs
         run: npm run docs:build
 

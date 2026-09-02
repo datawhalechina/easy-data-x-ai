@@ -274,56 +274,56 @@ python code/D1/d1_1_base.py
     <img src="https://avatars.githubusercontent.com/u/13233790?v=4&s=144" width="72" height="72" alt="liboyang0730" style="border-radius:50%;" />
   </a><br />
   <a href="https://github.com/liboyang0730" title="打开 liboyang0730 的 GitHub 主页"><kbd><strong>liboyang073…</strong></kbd></a><br />
-  <sub>112 commits</sub>
+  <sub>112 commits<br />13 merged PRs</sub>
 </td>
 <td align="center" valign="top" width="104">
   <a href="https://github.com/Kratos-Lee" title="Kratos-Lee">
     <img src="https://avatars.githubusercontent.com/u/180283969?v=4&s=144" width="72" height="72" alt="Kratos-Lee" style="border-radius:50%;" />
   </a><br />
   <a href="https://github.com/Kratos-Lee" title="打开 Kratos-Lee 的 GitHub 主页"><kbd><strong>Kratos‑Lee</strong></kbd></a><br />
-  <sub>22 commits</sub>
+  <sub>22 commits<br />11 merged PRs</sub>
 </td>
 <td align="center" valign="top" width="104">
   <a href="https://github.com/knqiufan" title="knqiufan">
     <img src="https://avatars.githubusercontent.com/u/34114995?v=4&s=144" width="72" height="72" alt="knqiufan" style="border-radius:50%;" />
   </a><br />
   <a href="https://github.com/knqiufan" title="打开 knqiufan 的 GitHub 主页"><kbd><strong>knqiufan</strong></kbd></a><br />
-  <sub>20 commits</sub>
+  <sub>20 commits<br />14 merged PRs</sub>
 </td>
 <td align="center" valign="top" width="104">
   <a href="https://github.com/haoye2" title="haoye2">
     <img src="https://avatars.githubusercontent.com/u/199622891?v=4&s=144" width="72" height="72" alt="haoye2" style="border-radius:50%;" />
   </a><br />
   <a href="https://github.com/haoye2" title="打开 haoye2 的 GitHub 主页"><kbd><strong>haoye2</strong></kbd></a><br />
-  <sub>6 commits</sub>
+  <sub>6 commits<br />6 merged PRs</sub>
 </td>
 <td align="center" valign="top" width="104">
   <a href="https://github.com/Terminator666666" title="Terminator666666">
     <img src="https://avatars.githubusercontent.com/u/104662484?v=4&s=144" width="72" height="72" alt="Terminator666666" style="border-radius:50%;" />
   </a><br />
   <a href="https://github.com/Terminator666666" title="打开 Terminator666666 的 GitHub 主页"><kbd><strong>Terminator6…</strong></kbd></a><br />
-  <sub>2 commits</sub>
+  <sub>2 commits<br />1 merged PR</sub>
 </td>
 <td align="center" valign="top" width="104">
   <a href="https://github.com/amber-moe" title="amber-moe">
     <img src="https://avatars.githubusercontent.com/u/42762957?v=4&s=144" width="72" height="72" alt="amber-moe" style="border-radius:50%;" />
   </a><br />
   <a href="https://github.com/amber-moe" title="打开 amber-moe 的 GitHub 主页"><kbd><strong>amber‑moe</strong></kbd></a><br />
-  <sub>1 commit</sub>
+  <sub>1 commit<br />1 merged PR</sub>
 </td>
 <td align="center" valign="top" width="104">
   <a href="https://github.com/hu-qi" title="hu-qi">
     <img src="https://avatars.githubusercontent.com/u/17986122?v=4&s=144" width="72" height="72" alt="hu-qi" style="border-radius:50%;" />
   </a><br />
   <a href="https://github.com/hu-qi" title="打开 hu-qi 的 GitHub 主页"><kbd><strong>hu‑qi</strong></kbd></a><br />
-  <sub>1 commit</sub>
+  <sub>1 commit<br />1 merged PR</sub>
 </td>
 <td align="center" valign="top" width="104">
   <a href="https://github.com/Iridescent115" title="Iridescent115">
     <img src="https://avatars.githubusercontent.com/u/209439429?v=4&s=144" width="72" height="72" alt="Iridescent115" style="border-radius:50%;" />
   </a><br />
   <a href="https://github.com/Iridescent115" title="打开 Iridescent115 的 GitHub 主页"><kbd><strong>Iridescent1…</strong></kbd></a><br />
-  <sub>1 commit</sub>
+  <sub>1 commit<br />1 merged PR</sub>
 </td>
 </tr>
 <tr>
@@ -332,42 +332,49 @@ python code/D1/d1_1_base.py
     <img src="https://avatars.githubusercontent.com/u/43478980?v=4&s=144" width="72" height="72" alt="JasonZhang10086" style="border-radius:50%;" />
   </a><br />
   <a href="https://github.com/JasonZhang10086" title="打开 JasonZhang10086 的 GitHub 主页"><kbd><strong>JasonZhang1…</strong></kbd></a><br />
-  <sub>1 commit</sub>
+  <sub>1 commit<br />1 merged PR</sub>
 </td>
 <td align="center" valign="top" width="104">
   <a href="https://github.com/jay666mnj" title="jay666mnj">
     <img src="https://avatars.githubusercontent.com/u/192066339?v=4&s=144" width="72" height="72" alt="jay666mnj" style="border-radius:50%;" />
   </a><br />
   <a href="https://github.com/jay666mnj" title="打开 jay666mnj 的 GitHub 主页"><kbd><strong>jay666mnj</strong></kbd></a><br />
-  <sub>1 commit</sub>
+  <sub>1 commit<br />1 merged PR</sub>
 </td>
 <td align="center" valign="top" width="104">
   <a href="https://github.com/ksk2023" title="ksk2023">
     <img src="https://avatars.githubusercontent.com/u/154514711?v=4&s=144" width="72" height="72" alt="ksk2023" style="border-radius:50%;" />
   </a><br />
   <a href="https://github.com/ksk2023" title="打开 ksk2023 的 GitHub 主页"><kbd><strong>ksk2023</strong></kbd></a><br />
-  <sub>1 commit</sub>
+  <sub>1 commit<br />1 merged PR</sub>
 </td>
 <td align="center" valign="top" width="104">
   <a href="https://github.com/oiahoon" title="oiahoon">
     <img src="https://avatars.githubusercontent.com/u/4361724?v=4&s=144" width="72" height="72" alt="oiahoon" style="border-radius:50%;" />
   </a><br />
   <a href="https://github.com/oiahoon" title="打开 oiahoon 的 GitHub 主页"><kbd><strong>oiahoon</strong></kbd></a><br />
-  <sub>1 commit</sub>
+  <sub>1 commit<br />1 merged PR</sub>
 </td>
 <td align="center" valign="top" width="104">
   <a href="https://github.com/pzb5471" title="pzb5471">
     <img src="https://avatars.githubusercontent.com/u/77824109?v=4&s=144" width="72" height="72" alt="pzb5471" style="border-radius:50%;" />
   </a><br />
   <a href="https://github.com/pzb5471" title="打开 pzb5471 的 GitHub 主页"><kbd><strong>pzb5471</strong></kbd></a><br />
-  <sub>1 commit</sub>
+  <sub>1 commit<br />1 merged PR</sub>
 </td>
 <td align="center" valign="top" width="104">
   <a href="https://github.com/webup" title="webup">
     <img src="https://avatars.githubusercontent.com/u/2936504?v=4&s=144" width="72" height="72" alt="webup" style="border-radius:50%;" />
   </a><br />
   <a href="https://github.com/webup" title="打开 webup 的 GitHub 主页"><kbd><strong>webup</strong></kbd></a><br />
-  <sub>1 commit</sub>
+  <sub>1 commit<br />1 merged PR</sub>
+</td>
+<td align="center" valign="top" width="104">
+  <a href="https://github.com/LINxiansheng" title="LINxiansheng">
+    <img src="https://avatars.githubusercontent.com/u/18351861?v=4&s=144" width="72" height="72" alt="LINxiansheng" style="border-radius:50%;" />
+  </a><br />
+  <a href="https://github.com/LINxiansheng" title="打开 LINxiansheng 的 GitHub 主页"><kbd><strong>LINxianshen…</strong></kbd></a><br />
+  <sub>4 merged PRs</sub>
 </td>
 </tr>
 </table>
