@@ -44,9 +44,19 @@ cp .env.example .env
 
 ### 1. 安装依赖（Python 3.11+）
 
+```powershell
+# Windows PowerShell（仓库根目录）
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+python -m pip install -r code/requirements-test.txt
+```
+
 ```bash
-python3.12 -m venv .venv && source .venv/bin/activate
-pip install pyseekdb PyYAML python-dotenv
+# macOS / Linux
+python3 -m venv .venv && source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -r code/requirements-test.txt
 ```
 
 ### 2. 初始化 → 迁移 → 查询
@@ -71,7 +81,7 @@ python x2_1_compare_context.py
 
 ```bash
 cd code/X2
-pip install pyseekdb PyYAML python-dotenv
+# 依赖见仓库根目录 venv（code/requirements-test.txt）
 python database/check_seekdb.py    # 应显示 embedded 模式
 python database/init_seekdb.py
 python tools/migrate.py skills/ --all

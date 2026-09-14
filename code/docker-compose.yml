@@ -1,0 +1,20 @@
+# D1～D4 课程示例共用的 seekdb Server（macOS / Windows 推荐）
+# 用法（仓库根目录）：
+#   docker compose -f code/docker-compose.yml up -d
+#   .venv/Scripts/python code/check_seekdb_env.py
+# Linux 若已安装匹配的 pylibseekdb，可不启 Server，使用 Embedded。
+services:
+  seekdb:
+    image: oceanbase/seekdb:latest
+    container_name: easy-data-x-ai-seekdb
+    ports:
+      - "127.0.0.1:2881:2881"
+      - "127.0.0.1:2886:2886"
+    volumes:
+      - seekdb-data:/var/lib/oceanbase
+    environment:
+      # 仅作默认演示库名；集成测试请再设 SEEKDB_TEST_* 指向隔离库
+      SEEKDB_DATABASE: easy_data_x_ai_demo
+
+volumes:
+  seekdb-data:

@@ -121,8 +121,49 @@ python d1_1_base.py
 | X5 | 需要安装 MCP 依赖，并准备好 X2 的本地数据 |
 | P5 | 默认使用确定性离线 Agent；LangSmith 上报为可选功能 |
 
-Linux 可以使用默认 Embedded 模式。macOS / Windows 请启动隔离的 seekdb
-Server，并显式配置：
+### seekdb 准备（OceanBase）
+
+Embedded 模式依赖 `pylibseekdb`，**当前仅部分 Linux / Apple Silicon macOS 环境可用**。  
+**Windows 与大多数 macOS 必须使用 seekdb Server。**
+
+先做一次环境自检：
+
+```powershell
+.\.venv\Scripts\python.exe code\check_seekdb_env.py
+```
+
+#### 1. 启动 Server（推荐 Docker）
+
+需要已安装 [Docker Desktop](https://www.docker.com/products/docker-desktop/)。
+
+D1～D4 共用：
+
+```powershell
+docker compose -f code/docker-compose.yml up -d
+```
+
+X2 单独实例（可选）：
+
+```powershell
+cd code/X2
+docker compose up -d
+```
+
+等待容器就绪后，将端口 2881 视为健康检查点。
+
+#### 2. 配置 Server 环境变量
+
+Windows PowerShell（仅对当前会话生效）：
+
+```powershell
+$env:SEEKDB_MODE = "server"
+$env:SEEKDB_HOST = "127.0.0.1"
+$env:SEEKDB_PORT = "2881"
+$env:SEEKDB_DATABASE = "easy_data_x_ai_demo"
+$env:SEEKDB_ALLOW_DESTRUCTIVE = "1"
+```
+
+macOS / Linux：
 
 ```bash
 export SEEKDB_MODE=server
@@ -132,28 +173,44 @@ export SEEKDB_DATABASE=easy_data_x_ai_demo
 export SEEKDB_ALLOW_DESTRUCTIVE=1
 ```
 
-最后一个变量允许示例重建集合，只能用于专门的演示/测试数据库，禁止对生产库设置。
+`SEEKDB_ALLOW_DESTRUCTIVE=1` 允许示例重建集合，**只能用于专门的演示/测试数据库**，禁止对生产库设置。
 
-健康检查：
+#### 3. 集成测试专用变量
 
-```bash
-.venv/bin/python -m pip check
-PYTHONPATH=code .venv/bin/python -c "from seekdb_runtime import create_seekdb_client; print('Python 依赖可导入')"
+`code/run_tests.py` 中的 D3 / X2 真实数据库用例优先读取 `SEEKDB_TEST_*`，不要与日常演示库混用：
+
+```powershell
+$env:SEEKDB_TEST_HOST = "127.0.0.1"
+$env:SEEKDB_TEST_PORT = "2881"
+$env:SEEKDB_TEST_DATABASE = "easy_data_x_ai_test"
+$env:SEEKDB_TEST_X2_DATABASE = "easy_data_x_ai_x2_test"
+$env:SEEKDB_ALLOW_DESTRUCTIVE = "1"
+```
+
+#### 4. 健康检查
+
+```powershell
+.\.venv\Scripts\python.exe -m pip check
+$env:PYTHONPATH = "code"
+.\.venv\Scripts\python.exe -c "from seekdb_runtime import create_seekdb_client; print('Python 依赖可导入')"
+.\.venv\Scripts\python.exe code\check_seekdb_env.py
 ```
 
 ## 测试
 
 在仓库根目录运行：
 
-```bash
-.venv/bin/python code/run_tests.py
-.venv/bin/python -m compileall -q code
+```powershell
+.\.venv\Scripts\python.exe code\run_tests.py
+.\.venv\Scripts\python.exe -m compileall -q code
 npm run docs:build
 ```
 
 `code/run_tests.py` 会显式运行配置、D1～D4、X1、X2、X5 和 P5 测试，
 并在任意测试组执行 0 个测试或跳过测试时返回失败。CI 使用离线模型替身和临时数据库；
 需要 API Key 的真实模型调用应在本地单独执行并与离线测试结果分开记录。
+
+**Windows 说明**：未安装 `pylibseekdb` 时，D3/X2 的真实数据库用例必须先按上文启动 Server 并设置 `SEEKDB_TEST_*`，否则会失败并给出可操作的提示（不是静默跳过）。X1、P5 以及各目录中不依赖数据库的用例可在无 Docker 环境直接通过。
 
 ## 说明
 

@@ -16,6 +16,7 @@ class SeekdbRuntimeTests(unittest.TestCase):
 
         with (
             patch.dict(os.environ, {"SEEKDB_MODE": "embedded"}, clear=True),
+            patch("seekdb_runtime.embedded_available", return_value=True),
             patch("seekdb_runtime.pyseekdb.Client") as client_factory,
         ):
             create_seekdb_client(path="/tmp/course-seekdb")
@@ -23,6 +24,19 @@ class SeekdbRuntimeTests(unittest.TestCase):
         client_factory.assert_called_once_with(
             path=str(Path("/tmp/course-seekdb").resolve())
         )
+
+    def test_embedded_mode_without_pylibseekdb_fails_with_platform_hint(self):
+        from seekdb_runtime import create_seekdb_client
+
+        with (
+            patch.dict(os.environ, {"SEEKDB_MODE": "embedded"}, clear=True),
+            patch("seekdb_runtime.embedded_available", return_value=False),
+            patch("seekdb_runtime.pyseekdb.Client") as client_factory,
+            self.assertRaisesRegex(RuntimeError, "pylibseekdb"),
+        ):
+            create_seekdb_client(path="/tmp/course-seekdb")
+
+        client_factory.assert_not_called()
 
     def test_server_mode_uses_validated_environment(self):
         from seekdb_runtime import create_seekdb_client

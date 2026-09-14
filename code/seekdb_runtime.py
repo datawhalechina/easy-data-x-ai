@@ -3,9 +3,26 @@
 from __future__ import annotations
 
 import os
+from importlib.util import find_spec
 from pathlib import Path
 
 import pyseekdb
+
+EMBEDDED_UNAVAILABLE_HINT = (
+    "Embedded 模式依赖 pylibseekdb（当前平台未安装或不支持）。"
+    "macOS/Windows 请启动 seekdb Server，并设置：\n"
+    "  SEEKDB_MODE=server\n"
+    "  SEEKDB_HOST=127.0.0.1\n"
+    "  SEEKDB_PORT=2881\n"
+    "  SEEKDB_DATABASE=<隔离演示库名>\n"
+    "  SEEKDB_ALLOW_DESTRUCTIVE=1  # 仅演示/测试库\n"
+    "启动方式见 code/README.md 与 code/docker-compose.yml。"
+)
+
+
+def embedded_available() -> bool:
+    """Embedded 仅在安装了平台匹配的 pylibseekdb 时可用。"""
+    return find_spec("pylibseekdb") is not None
 
 
 def resolve_seekdb_mode() -> str:
@@ -45,6 +62,8 @@ def create_seekdb_client(path: str | Path):
             user=os.getenv("SEEKDB_USER", "root"),
             password=os.getenv("SEEKDB_PASSWORD", ""),
         )
+    if not embedded_available():
+        raise RuntimeError(EMBEDDED_UNAVAILABLE_HINT)
     return pyseekdb.Client(path=str(Path(path).expanduser().resolve()))
 
 

@@ -41,7 +41,28 @@ PYTHONPATH=D3 python D3/d3_5_evaluate.py
 
 ## macOS 或 Windows 为什么不能直接使用 seekdb Embedded？
 
-课程当前把 Linux Embedded 作为默认体验。macOS、Windows 或需要多人共享数据库时，建议启动独立的 seekdb Server，并设置 `SEEKDB_MODE=server`、`SEEKDB_HOST`、`SEEKDB_PORT` 和唯一的 `SEEKDB_DATABASE`。测试变量 `SEEKDB_TEST_*` 只供集成测试使用，不应与日常演示库混用。
+Embedded 依赖平台原生扩展 `pylibseekdb`，当前主要覆盖部分 Linux 环境；Windows 以及多数 macOS 无法安装该扩展。  
+在这些平台上，应启动隔离的 seekdb Server（OceanBase），再运行示例与集成测试。
+
+推荐步骤：
+
+```bash
+# 1. 启动 Server（需 Docker）
+docker compose -f code/docker-compose.yml up -d
+
+# 2. 自检
+.venv/bin/python code/check_seekdb_env.py
+
+# 3. 当前会话配置 Server 模式
+export SEEKDB_MODE=server
+export SEEKDB_HOST=127.0.0.1
+export SEEKDB_PORT=2881
+export SEEKDB_DATABASE=easy_data_x_ai_demo
+export SEEKDB_ALLOW_DESTRUCTIVE=1
+```
+
+Windows PowerShell 将 `export` 换成 `$env:变量名 = "值"`。  
+测试变量 `SEEKDB_TEST_*` 只供集成测试使用，不应与日常演示库混用。完整说明见 `code/README.md`。
 
 ## 模型未开通、Key 无权限和限流怎么区分？
 
