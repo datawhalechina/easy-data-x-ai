@@ -274,7 +274,7 @@ python code/D1/d1_1_base.py
     <img src="https://avatars.githubusercontent.com/u/13233790?v=4&s=144" width="72" height="72" alt="liboyang0730" style="border-radius:50%;" />
   </a><br />
   <a href="https://github.com/liboyang0730" title="打开 liboyang0730 的 GitHub 主页"><kbd><strong>liboyang073…</strong></kbd></a><br />
-  <sub>116 commits<br />14 merged PRs</sub>
+  <sub>117 commits<br />14 merged PRs</sub>
 </td>
 <td align="center" valign="top" width="104">
   <a href="https://github.com/knqiufan" title="knqiufan">
@@ -288,7 +288,7 @@ python code/D1/d1_1_base.py
     <img src="https://avatars.githubusercontent.com/u/180283969?v=4&s=144" width="72" height="72" alt="Kratos-Lee" style="border-radius:50%;" />
   </a><br />
   <a href="https://github.com/Kratos-Lee" title="打开 Kratos-Lee 的 GitHub 主页"><kbd><strong>Kratos‑Lee</strong></kbd></a><br />
-  <sub>22 commits<br />11 merged PRs</sub>
+  <sub>23 commits<br />11 merged PRs</sub>
 </td>
 <td align="center" valign="top" width="104">
   <a href="https://github.com/haoye2" title="haoye2">
@@ -356,6 +356,13 @@ python code/D1/d1_1_base.py
   <sub>1 commit<br />1 merged PR</sub>
 </td>
 <td align="center" valign="top" width="104">
+  <a href="https://github.com/nha114514" title="nha114514">
+    <img src="https://avatars.githubusercontent.com/u/262920247?v=4&s=144" width="72" height="72" alt="nha114514" style="border-radius:50%;" />
+  </a><br />
+  <a href="https://github.com/nha114514" title="打开 nha114514 的 GitHub 主页"><kbd><strong>nha114514</strong></kbd></a><br />
+  <sub>1 commit<br />1 merged PR</sub>
+</td>
+<td align="center" valign="top" width="104">
   <a href="https://github.com/oiahoon" title="oiahoon">
     <img src="https://avatars.githubusercontent.com/u/4361724?v=4&s=144" width="72" height="72" alt="oiahoon" style="border-radius:50%;" />
   </a><br />
@@ -376,6 +383,8 @@ python code/D1/d1_1_base.py
   <a href="https://github.com/webup" title="打开 webup 的 GitHub 主页"><kbd><strong>webup</strong></kbd></a><br />
   <sub>1 commit<br />1 merged PR</sub>
 </td>
+</tr>
+<tr>
 <td align="center" valign="top" width="104">
   <a href="https://github.com/LINxiansheng" title="LINxiansheng">
     <img src="https://avatars.githubusercontent.com/u/18351861?v=4&s=144" width="72" height="72" alt="LINxiansheng" style="border-radius:50%;" />
