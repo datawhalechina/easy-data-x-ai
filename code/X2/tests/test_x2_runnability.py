@@ -6,6 +6,7 @@ import unittest
 import subprocess
 import tempfile
 from contextlib import redirect_stdout
+from importlib.util import find_spec
 from io import StringIO
 from pathlib import Path
 from typing import Any
@@ -22,21 +23,36 @@ from database.schema import EXAMPLES_COLLECTION, RULES_COLLECTION, SKILLS_COLLEC
 
 
 def real_database_env() -> dict[str, str]:
-    """配置外部测试库时使用 Server，否则使用 Embedded。"""
+    """配置外部测试库时使用 Server；否则在可用时使用 Embedded。
+
+    不在 pylibseekdb 缺失时强行设置 SEEKDB_MODE=embedded，
+    否则 Windows/macOS 会撞上与生产 resolve_mode() 不一致的
+    “Embedded Client is not available” 崩溃。
+    """
     host = os.getenv("SEEKDB_TEST_HOST")
-    if not host:
-        return {"SEEKDB_MODE": "embedded", "SEEKDB_DATABASE": "x2_skills"}
-    return {
-        "SEEKDB_MODE": "server",
-        "SEEKDB_HOST": host,
-        "SEEKDB_PORT": os.getenv("SEEKDB_TEST_PORT", "2881"),
-        "SEEKDB_USER": os.getenv("SEEKDB_TEST_USER", "root"),
-        "SEEKDB_PASSWORD": os.getenv("SEEKDB_TEST_PASSWORD", ""),
-        "SEEKDB_DATABASE": os.getenv(
-            "SEEKDB_TEST_X2_DATABASE",
-            "easy_data_x_ai_x2_test",
-        ),
-    }
+    if host:
+        return {
+            "SEEKDB_MODE": "server",
+            "SEEKDB_HOST": host,
+            "SEEKDB_PORT": os.getenv("SEEKDB_TEST_PORT", "2881"),
+            "SEEKDB_USER": os.getenv("SEEKDB_TEST_USER", "root"),
+            "SEEKDB_PASSWORD": os.getenv("SEEKDB_TEST_PASSWORD", ""),
+            "SEEKDB_DATABASE": os.getenv(
+                "SEEKDB_TEST_X2_DATABASE",
+                "easy_data_x_ai_x2_test",
+            ),
+        }
+    if find_spec("pylibseekdb") is None:
+        raise RuntimeError(
+            "X2 集成测试需要 seekdb。当前平台没有 pylibseekdb，"
+            "Embedded 不可用。请启动 seekdb Server 后设置：\n"
+            "  SEEKDB_TEST_HOST=127.0.0.1\n"
+            "  SEEKDB_TEST_PORT=2881\n"
+            "  SEEKDB_TEST_X2_DATABASE=easy_data_x_ai_x2_test\n"
+            "  SEEKDB_ALLOW_DESTRUCTIVE=1\n"
+            "启动步骤见 code/X2/README.md（cd code/X2 && docker compose up -d）。"
+        )
+    return {"SEEKDB_MODE": "embedded", "SEEKDB_DATABASE": "x2_skills"}
 
 
 def clear_x2_collections(client) -> None:

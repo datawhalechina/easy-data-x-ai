@@ -36,7 +36,7 @@ class TestRunnerSafetyTests(unittest.TestCase):
         """防止 D1 可运行性、X1 或 X5 再次从仓库级测试入口中消失。"""
         group_names = {group.name for group in TEST_GROUPS}
         self.assertTrue(
-            {"seekdb 运行模式", "D1 可运行性", "X1 示例入口", "X5 MCP"}.issubset(
+            {"seekdb 运行模式", "seekdb 环境自检", "D1 可运行性", "X1 示例入口", "X5 MCP"}.issubset(
                 group_names
             )
         )

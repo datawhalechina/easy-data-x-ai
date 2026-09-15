@@ -1,10 +1,31 @@
 import os
+import subprocess
 import unittest
 from pathlib import Path
 from unittest.mock import patch
 
 
 class SeekdbRuntimeTests(unittest.TestCase):
+    def test_embedded_package_must_load_successfully_in_probe_process(self):
+        from seekdb_runtime import embedded_available
+
+        for returncode in (1, -11):
+            with (
+                self.subTest(returncode=returncode),
+                patch("seekdb_runtime.find_spec", return_value=object()),
+                patch("subprocess.run", return_value=subprocess.CompletedProcess([], returncode)),
+            ):
+                self.assertFalse(embedded_available())
+
+    def test_embedded_probe_timeout_is_unavailable(self):
+        from seekdb_runtime import embedded_available
+
+        with (
+            patch("seekdb_runtime.find_spec", return_value=object()),
+            patch("subprocess.run", side_effect=subprocess.TimeoutExpired([], 10)),
+        ):
+            self.assertFalse(embedded_available())
+
     def test_host_alone_does_not_enable_server_mode(self):
         from seekdb_runtime import resolve_seekdb_mode
 
@@ -16,6 +37,7 @@ class SeekdbRuntimeTests(unittest.TestCase):
 
         with (
             patch.dict(os.environ, {"SEEKDB_MODE": "embedded"}, clear=True),
+            patch("seekdb_runtime.embedded_available", return_value=True),
             patch("seekdb_runtime.pyseekdb.Client") as client_factory,
         ):
             create_seekdb_client(path="/tmp/course-seekdb")
@@ -23,6 +45,19 @@ class SeekdbRuntimeTests(unittest.TestCase):
         client_factory.assert_called_once_with(
             path=str(Path("/tmp/course-seekdb").resolve())
         )
+
+    def test_embedded_mode_without_pylibseekdb_fails_with_platform_hint(self):
+        from seekdb_runtime import create_seekdb_client
+
+        with (
+            patch.dict(os.environ, {"SEEKDB_MODE": "embedded"}, clear=True),
+            patch("seekdb_runtime.embedded_available", return_value=False),
+            patch("seekdb_runtime.pyseekdb.Client") as client_factory,
+            self.assertRaisesRegex(RuntimeError, "pylibseekdb"),
+        ):
+            create_seekdb_client(path="/tmp/course-seekdb")
+
+        client_factory.assert_not_called()
 
     def test_server_mode_uses_validated_environment(self):
         from seekdb_runtime import create_seekdb_client

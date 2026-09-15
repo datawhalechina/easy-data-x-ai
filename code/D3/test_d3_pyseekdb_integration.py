@@ -6,6 +6,7 @@ import tempfile
 import time
 import unittest
 import uuid
+from importlib.util import find_spec
 from pathlib import Path
 
 import pyseekdb
@@ -89,6 +90,16 @@ def create_test_client(temp_dir):
     """优先连接外部测试库；未配置时回退到临时 Embedded 数据库。"""
     host = os.getenv("SEEKDB_TEST_HOST")
     if not host:
+        if find_spec("pylibseekdb") is None:
+            raise RuntimeError(
+                "D3 集成测试需要 seekdb。当前平台没有 pylibseekdb，"
+                "Embedded 不可用。请启动 seekdb Server 后设置：\n"
+                "  SEEKDB_TEST_HOST=127.0.0.1\n"
+                "  SEEKDB_TEST_PORT=2881\n"
+                "  SEEKDB_TEST_DATABASE=easy_data_x_ai_test\n"
+                "  SEEKDB_ALLOW_DESTRUCTIVE=1\n"
+                "启动步骤见 code/README.md（docker compose up -d）。"
+            )
         return pyseekdb.Client(path=str(Path(temp_dir) / "seekdb"))
     database = os.getenv("SEEKDB_TEST_DATABASE", "").strip()
     if not database:

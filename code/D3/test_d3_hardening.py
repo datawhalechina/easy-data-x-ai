@@ -121,6 +121,47 @@ def load_script(filename):
     return namespace, database, client_paths
 
 
+def run_create_db_client(filename, *, seekdb_mode="embedded"):
+    """加载脚本，并在假 pyseekdb + Embedded 可用前提下执行 create_db_client。
+
+    调用必须发生在 patch 仍生效的上下文内，否则会落到真实 pyseekdb。
+    """
+    database = FakeDatabase()
+    client_paths = []
+
+    def make_database(*args, **kwargs):
+        client_paths.append(kwargs.get("path"))
+        return database
+
+    direct_answer = FakeMessage(content="测试回答")
+    default_client = SequenceClient([direct_answer] * 20)
+    fake_pyseekdb = types.SimpleNamespace(Client=make_database)
+    fake_openai = types.SimpleNamespace(OpenAI=lambda **kwargs: default_client)
+
+    with (
+        patch.dict(
+            sys.modules,
+            {"pyseekdb": fake_pyseekdb, "openai": fake_openai},
+        ),
+        contextlib.redirect_stdout(io.StringIO()),
+    ):
+        namespace = runpy.run_path(str(D3_DIR / filename), run_name="d3_test")
+        create_db_client = namespace.get("create_db_client")
+        if create_db_client is None:
+            raise AssertionError(f"{filename} 未定义 create_db_client")
+
+        import seekdb_runtime
+
+        with (
+            patch.dict("os.environ", {"SEEKDB_MODE": seekdb_mode}, clear=False),
+            patch.object(seekdb_runtime, "pyseekdb", fake_pyseekdb),
+            patch.object(seekdb_runtime, "embedded_available", return_value=True),
+        ):
+            create_db_client()
+
+    return namespace, database, client_paths
+
+
 class DatabaseSafetyTests(unittest.TestCase):
     def test_importing_scripts_does_not_open_or_modify_database(self):
         for filename in (
@@ -143,15 +184,7 @@ class DatabaseSafetyTests(unittest.TestCase):
             "d3_4_production.py",
         ):
             with self.subTest(filename=filename):
-                with patch.dict(
-                    "os.environ",
-                    {"SEEKDB_MODE": "embedded"},
-                    clear=False,
-                ):
-                    namespace, _, client_paths = load_script(filename)
-                    create_db_client = namespace.get("create_db_client")
-                    self.assertIsNotNone(create_db_client)
-                    create_db_client()
+                _, _, client_paths = run_create_db_client(filename)
                 self.assertEqual([str(expected)], client_paths)
 
     def test_ingest_reuses_collection_and_upserts_documents(self):

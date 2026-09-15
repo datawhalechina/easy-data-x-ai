@@ -79,7 +79,7 @@ DASHSCOPE_API_KEY=your_dashscope_api_key_here
 先运行不需要 API Key 和数据库的 D3 离线评测，确认 Python 环境可用：
 
 ```bash
-PYTHONPATH=code/D3:code .venv/bin/python code/D3/d3_5_evaluate.py
+python code/D3/d3_5_evaluate.py
 ```
 
 该脚本会实际执行查询改写、多路自适应检索、纠错重试和答案校验，并在 `code/D3/reports/` 生成离线评测与策略对比报告。
@@ -121,8 +121,45 @@ python d1_1_base.py
 | X5 | 需要安装 MCP 依赖，并准备好 X2 的本地数据 |
 | P5 | 默认使用确定性离线 Agent；LangSmith 上报为可选功能 |
 
-Linux 可以使用默认 Embedded 模式。macOS / Windows 请启动隔离的 seekdb
-Server，并显式配置：
+### seekdb 准备（OceanBase）
+
+Embedded 模式依赖能在当前平台加载的 `pylibseekdb`。Windows 请使用 seekdb Server；macOS / Linux 没有匹配的原生扩展时也使用 Server。
+
+以下命令均在**仓库根目录、已激活的虚拟环境**中执行。先启动并配置 Server，再运行自检。
+
+#### 1. 启动 Server（推荐 Docker）
+
+需要已安装 [Docker Desktop](https://www.docker.com/products/docker-desktop/)。
+
+D1～D4 与 X2 默认共用一个实例，各自使用独立数据库：
+
+```bash
+docker compose -f code/docker-compose.yml up -d
+```
+
+`code/X2/docker-compose.yml` 是可选的独立实例方案，与上面的共用实例**二选一**。两份配置都占用宿主机的 `2881/2886` 端口，不能同时启动；X2 默认复用已启动的共用实例，具体步骤见 [X2 README](X2/README.md)。
+
+等待初始化完成后，用镜像内置的 MySQL 客户端执行一次查询（macOS / Linux / PowerShell 命令相同）：
+
+```bash
+docker compose -f code/docker-compose.yml exec -T seekdb mysql -h127.0.0.1 -P2881 -uroot -e "SELECT 1;"
+```
+
+首次启动可能需要几分钟；若连接失败，查看 `docker compose -f code/docker-compose.yml logs --tail=50 seekdb`，待初始化结束后重试。只有查询成功才说明数据库已就绪。以下命令使用此 Compose 的默认本地账号 `root` 和空密码；自定义账号或密码时需同步调整连接参数。
+
+#### 2. 配置 Server 环境变量
+
+Windows PowerShell（仅对当前会话生效）：
+
+```powershell
+$env:SEEKDB_MODE = "server"
+$env:SEEKDB_HOST = "127.0.0.1"
+$env:SEEKDB_PORT = "2881"
+$env:SEEKDB_DATABASE = "easy_data_x_ai_demo"
+$env:SEEKDB_ALLOW_DESTRUCTIVE = "1"
+```
+
+macOS / Linux：
 
 ```bash
 export SEEKDB_MODE=server
@@ -132,28 +169,65 @@ export SEEKDB_DATABASE=easy_data_x_ai_demo
 export SEEKDB_ALLOW_DESTRUCTIVE=1
 ```
 
-最后一个变量允许示例重建集合，只能用于专门的演示/测试数据库，禁止对生产库设置。
+`SEEKDB_ALLOW_DESTRUCTIVE=1` 允许示例重建集合，**只能用于专门的演示/测试数据库**，禁止对生产库设置。
 
-健康检查：
+#### 3. 集成测试专用变量
+
+`code/run_tests.py` 中的 D3 / X2 真实数据库用例优先读取 `SEEKDB_TEST_*`，不要与日常演示库混用：
+
+共用 Compose 只初始化演示库 `easy_data_x_ai_demo`。**先显式创建测试库**，再配置测试环境变量；仅设置库名不会创建数据库：
 
 ```bash
-.venv/bin/python -m pip check
-PYTHONPATH=code .venv/bin/python -c "from seekdb_runtime import create_seekdb_client; print('Python 依赖可导入')"
+docker compose -f code/docker-compose.yml exec -T seekdb mysql -h127.0.0.1 -P2881 -uroot -e "CREATE DATABASE IF NOT EXISTS easy_data_x_ai_test; CREATE DATABASE IF NOT EXISTS easy_data_x_ai_x2_test;"
+docker compose -f code/docker-compose.yml exec -T seekdb mysql -h127.0.0.1 -P2881 -uroot -D easy_data_x_ai_test -e "SELECT DATABASE(), 1;"
 ```
+
+Windows PowerShell：
+
+```powershell
+$env:SEEKDB_TEST_HOST = "127.0.0.1"
+$env:SEEKDB_TEST_PORT = "2881"
+$env:SEEKDB_TEST_DATABASE = "easy_data_x_ai_test"
+$env:SEEKDB_TEST_X2_DATABASE = "easy_data_x_ai_x2_test"
+$env:SEEKDB_ALLOW_DESTRUCTIVE = "1"
+```
+
+macOS / Linux：
+
+```bash
+export SEEKDB_TEST_HOST=127.0.0.1
+export SEEKDB_TEST_PORT=2881
+export SEEKDB_TEST_DATABASE=easy_data_x_ai_test
+export SEEKDB_TEST_X2_DATABASE=easy_data_x_ai_x2_test
+export SEEKDB_ALLOW_DESTRUCTIVE=1
+```
+
+使用自定义测试账号时，还需设置 `SEEKDB_TEST_USER` 和 `SEEKDB_TEST_PASSWORD`。
+
+#### 4. 健康检查
+
+```bash
+python -m pip check
+python code/check_seekdb_env.py
+```
+
+Server 自检会验证 `SEEKDB_*` 配置并实际连接演示库执行只读查询；`SEEKDB_TEST_*` 指向的测试库由下面的集成测试验证。
 
 ## 测试
 
-在仓库根目录运行：
+在仓库根目录、已激活的虚拟环境中运行（macOS / Linux / PowerShell 命令相同）：
 
 ```bash
-.venv/bin/python code/run_tests.py
-.venv/bin/python -m compileall -q code
+python code/run_tests.py
+python -m compileall -q code
 npm run docs:build
 ```
 
 `code/run_tests.py` 会显式运行配置、D1～D4、X1、X2、X5 和 P5 测试，
 并在任意测试组执行 0 个测试或跳过测试时返回失败。CI 使用离线模型替身和临时数据库；
 需要 API Key 的真实模型调用应在本地单独执行并与离线测试结果分开记录。
+
+**Windows 说明**：未安装 `pylibseekdb` 时，D3/X2 的真实数据库用例必须先按上文启动 Server 并设置 `SEEKDB_TEST_*`，否则会失败并给出可操作的提示（不是静默跳过）。X1、P5 以及各目录中不依赖数据库的用例可在无 Docker 环境直接通过。
 
 ## 说明
 
