@@ -16,19 +16,28 @@
 
 ## 如何运行示例代码？
 
-在项目根目录执行：
+在项目根目录创建并激活虚拟环境。macOS / Linux：
 
 ```bash
-cd code
-python -m venv .venv
+python3 -m venv .venv
 source .venv/bin/activate
-pip install --upgrade -r requirements.txt
+python -m pip install --upgrade pip
+python -m pip install -r code/requirements-test.txt
 ```
 
-再进入课程对应目录，按照正文中的顺序运行脚本。D3 可以先执行不需要数据库和 API Key 的离线评测：
+Windows PowerShell：
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+python -m pip install -r code/requirements-test.txt
+```
+
+再进入课程对应目录，按照正文中的顺序运行脚本。D3 可以先在仓库根目录执行不需要数据库和 API Key 的离线评测：
 
 ```bash
-PYTHONPATH=D3 python D3/d3_5_evaluate.py
+python code/D3/d3_5_evaluate.py
 ```
 
 ## 为什么同一篇里有“离线测试”和“真实接口测试”？
@@ -41,28 +50,40 @@ PYTHONPATH=D3 python D3/d3_5_evaluate.py
 
 ## macOS 或 Windows 为什么不能直接使用 seekdb Embedded？
 
-Embedded 依赖平台原生扩展 `pylibseekdb`，当前主要覆盖部分 Linux 环境；Windows 以及多数 macOS 无法安装该扩展。  
-在这些平台上，应启动隔离的 seekdb Server（OceanBase），再运行示例与集成测试。
+Embedded 依赖能在当前平台加载的原生扩展 `pylibseekdb`。Windows 请使用隔离的 seekdb Server；macOS / Linux 安装了匹配扩展时可用 Embedded，否则也使用 Server。
 
-推荐步骤：
+以下命令在**仓库根目录、已激活的虚拟环境**中执行。先启动共用 Server（需安装并运行 Docker）：
 
 ```bash
-# 1. 启动 Server（需 Docker）
 docker compose -f code/docker-compose.yml up -d
+docker compose -f code/docker-compose.yml exec -T seekdb mysql -h127.0.0.1 -P2881 -uroot -e "SELECT 1;"
+```
 
-# 2. 自检
-.venv/bin/python code/check_seekdb_env.py
+首次启动需要等待初始化；查询失败时查看容器日志并稍后重试。共用实例与 `code/X2/docker-compose.yml` 都占用 `2881/2886`，应二选一；X2 默认复用共用实例。
 
-# 3. 当前会话配置 Server 模式
+再配置当前会话的 Server 模式，最后运行自检。macOS / Linux：
+
+```bash
 export SEEKDB_MODE=server
 export SEEKDB_HOST=127.0.0.1
 export SEEKDB_PORT=2881
 export SEEKDB_DATABASE=easy_data_x_ai_demo
 export SEEKDB_ALLOW_DESTRUCTIVE=1
+python code/check_seekdb_env.py
 ```
 
-Windows PowerShell 将 `export` 换成 `$env:变量名 = "值"`。  
-测试变量 `SEEKDB_TEST_*` 只供集成测试使用，不应与日常演示库混用。完整说明见 `code/README.md`。
+Windows PowerShell：
+
+```powershell
+$env:SEEKDB_MODE = "server"
+$env:SEEKDB_HOST = "127.0.0.1"
+$env:SEEKDB_PORT = "2881"
+$env:SEEKDB_DATABASE = "easy_data_x_ai_demo"
+$env:SEEKDB_ALLOW_DESTRUCTIVE = "1"
+python code/check_seekdb_env.py
+```
+
+自检会验证演示库连接。运行 D3 / X2 集成测试前，还需显式创建隔离测试库，再配置 `SEEKDB_TEST_*`；只设置测试库名不会创建数据库。完整命令见 [Code README](https://github.com/datawhalechina/easy-data-x-ai/blob/main/code/README.md)。
 
 ## 模型未开通、Key 无权限和限流怎么区分？
 

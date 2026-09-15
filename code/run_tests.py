@@ -26,6 +26,7 @@ class TestGroup:
 TEST_GROUPS = (
     TestGroup("配置", "code", "test_config.py", "code"),
     TestGroup("seekdb 运行模式", "code", "test_seekdb_runtime.py", "code"),
+    TestGroup("seekdb 环境自检", "code", "test_check_seekdb_env.py", "code"),
     TestGroup("测试运行器", "code", "test_run_tests.py", "code"),
     TestGroup("D1 导入路径", "code", "test_example_import_paths.py", "code"),
     TestGroup("D1 工具循环", "code/D1", "test_tool_call_loop.py", "code/D1"),

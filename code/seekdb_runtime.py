@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import os
+import subprocess
+import sys
 from importlib.util import find_spec
 from pathlib import Path
 
@@ -21,8 +23,20 @@ EMBEDDED_UNAVAILABLE_HINT = (
 
 
 def embedded_available() -> bool:
-    """Embedded 仅在安装了平台匹配的 pylibseekdb 时可用。"""
-    return find_spec("pylibseekdb") is not None
+    """在独立进程检查原生扩展可加载，避免 ABI 错误导致主进程崩溃。"""
+    if find_spec("pylibseekdb") is None:
+        return False
+    try:
+        probe = subprocess.run(
+            [sys.executable, "-B", "-c", "import pyseekdb; import pylibseekdb"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            timeout=10,
+            check=False,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return False
+    return probe.returncode == 0
 
 
 def resolve_seekdb_mode() -> str:
@@ -48,20 +62,25 @@ def _server_port() -> int:
     return port
 
 
+def server_client_options() -> dict[str, str | int]:
+    """让示例和环境自检共用相同的 Server 配置校验。"""
+    database = os.getenv("SEEKDB_DATABASE", "").strip()
+    if not database:
+        raise ValueError("Server 模式必须显式配置 SEEKDB_DATABASE")
+    return {
+        "host": os.getenv("SEEKDB_HOST", "127.0.0.1"),
+        "port": _server_port(),
+        "tenant": os.getenv("SEEKDB_TENANT", "sys"),
+        "database": database,
+        "user": os.getenv("SEEKDB_USER", "root"),
+        "password": os.getenv("SEEKDB_PASSWORD", ""),
+    }
+
+
 def create_seekdb_client(path: str | Path):
     """按环境选择客户端；Server 模式不使用本地数据库路径。"""
     if resolve_seekdb_mode() == "server":
-        database = os.getenv("SEEKDB_DATABASE", "").strip()
-        if not database:
-            raise ValueError("Server 模式必须显式配置 SEEKDB_DATABASE")
-        return pyseekdb.Client(
-            host=os.getenv("SEEKDB_HOST", "127.0.0.1"),
-            port=_server_port(),
-            tenant=os.getenv("SEEKDB_TENANT", "sys"),
-            database=database,
-            user=os.getenv("SEEKDB_USER", "root"),
-            password=os.getenv("SEEKDB_PASSWORD", ""),
-        )
+        return pyseekdb.Client(**server_client_options())
     if not embedded_available():
         raise RuntimeError(EMBEDDED_UNAVAILABLE_HINT)
     return pyseekdb.Client(path=str(Path(path).expanduser().resolve()))

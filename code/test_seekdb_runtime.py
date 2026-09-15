@@ -1,10 +1,31 @@
 import os
+import subprocess
 import unittest
 from pathlib import Path
 from unittest.mock import patch
 
 
 class SeekdbRuntimeTests(unittest.TestCase):
+    def test_embedded_package_must_load_successfully_in_probe_process(self):
+        from seekdb_runtime import embedded_available
+
+        for returncode in (1, -11):
+            with (
+                self.subTest(returncode=returncode),
+                patch("seekdb_runtime.find_spec", return_value=object()),
+                patch("subprocess.run", return_value=subprocess.CompletedProcess([], returncode)),
+            ):
+                self.assertFalse(embedded_available())
+
+    def test_embedded_probe_timeout_is_unavailable(self):
+        from seekdb_runtime import embedded_available
+
+        with (
+            patch("seekdb_runtime.find_spec", return_value=object()),
+            patch("subprocess.run", side_effect=subprocess.TimeoutExpired([], 10)),
+        ):
+            self.assertFalse(embedded_available())
+
     def test_host_alone_does_not_enable_server_mode(self):
         from seekdb_runtime import resolve_seekdb_mode
 
