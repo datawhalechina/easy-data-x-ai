@@ -274,7 +274,14 @@ python code/D1/d1_1_base.py
     <img src="https://avatars.githubusercontent.com/u/13233790?v=4&s=144" width="72" height="72" alt="liboyang0730" style="border-radius:50%;" />
   </a><br />
   <a href="https://github.com/liboyang0730" title="打开 liboyang0730 的 GitHub 主页"><kbd><strong>liboyang073…</strong></kbd></a><br />
-  <sub>115 commits<br />14 merged PRs</sub>
+  <sub>116 commits<br />14 merged PRs</sub>
+</td>
+<td align="center" valign="top" width="104">
+  <a href="https://github.com/knqiufan" title="knqiufan">
+    <img src="https://avatars.githubusercontent.com/u/34114995?v=4&s=144" width="72" height="72" alt="knqiufan" style="border-radius:50%;" />
+  </a><br />
+  <a href="https://github.com/knqiufan" title="打开 knqiufan 的 GitHub 主页"><kbd><strong>knqiufan</strong></kbd></a><br />
+  <sub>23 commits<br />15 merged PRs</sub>
 </td>
 <td align="center" valign="top" width="104">
   <a href="https://github.com/Kratos-Lee" title="Kratos-Lee">
@@ -282,13 +289,6 @@ python code/D1/d1_1_base.py
   </a><br />
   <a href="https://github.com/Kratos-Lee" title="打开 Kratos-Lee 的 GitHub 主页"><kbd><strong>Kratos‑Lee</strong></kbd></a><br />
   <sub>22 commits<br />11 merged PRs</sub>
-</td>
-<td align="center" valign="top" width="104">
-  <a href="https://github.com/knqiufan" title="knqiufan">
-    <img src="https://avatars.githubusercontent.com/u/34114995?v=4&s=144" width="72" height="72" alt="knqiufan" style="border-radius:50%;" />
-  </a><br />
-  <a href="https://github.com/knqiufan" title="打开 knqiufan 的 GitHub 主页"><kbd><strong>knqiufan</strong></kbd></a><br />
-  <sub>20 commits<br />14 merged PRs</sub>
 </td>
 <td align="center" valign="top" width="104">
   <a href="https://github.com/haoye2" title="haoye2">
