@@ -42,7 +42,7 @@
 - 📊 看得见的性能差距：通过对比实验见证"混合检索"与"纯向量检索"的效果差异
 - 🤖 从零到一的 Agent 构建：为 Agent 加上记忆系统，教会它使用技能
 
-### 产业应用篇：见其用（面向产业实践与课程共建）
+### 产业应用篇：见其用（面向 AI 数据系统的产业实践）
 
 **适合人群：** 希望了解 AI 数据系统产业实践的开发者、技术爱好者和课程共建者
 
@@ -94,12 +94,12 @@
 
 | 课程编号 | 课程标题 | 开发状态 | 共建入口 |
 | --- | --- | --- | --- |
-| I1 | AI 原生数据库基础 | 开发中 | [#90](https://github.com/datawhalechina/easy-data-x-ai/issues/90) |
-| I2 | 向量数据库与 RAG | 开发中 | [#91](https://github.com/datawhalechina/easy-data-x-ai/issues/91) |
-| I3 | SQL × AI —— AI Functions 的设计与执行 | 开发中 | [#92](https://github.com/datawhalechina/easy-data-x-ai/issues/92) |
-| I4 | File SQL for AI Agent | 开发中 | [#93](https://github.com/datawhalechina/easy-data-x-ai/issues/93) |
-| I5 | AI 列 —— 模型驱动派生数据的自动维护 | 开发中 | [#94](https://github.com/datawhalechina/easy-data-x-ai/issues/94) |
-| I6 | 上下文工程概述 | 开发中 | [#95](https://github.com/datawhalechina/easy-data-x-ai/issues/95) |
+| I1 | AI 原生数据库基础 | 已完成 | [#90](https://github.com/datawhalechina/easy-data-x-ai/issues/90) |
+| I2 | 向量数据库与 RAG | 已完成 | [#91](https://github.com/datawhalechina/easy-data-x-ai/issues/91) |
+| I3 | SQL × AI —— AI Functions 的设计与执行 | 已完成 | [#92](https://github.com/datawhalechina/easy-data-x-ai/issues/92) |
+| I4 | File SQL for AI Agent | 已完成 | [#93](https://github.com/datawhalechina/easy-data-x-ai/issues/93) |
+| I5 | AI 列 —— 模型驱动派生数据的自动维护 | 已完成 | [#94](https://github.com/datawhalechina/easy-data-x-ai/issues/94) |
+| I6 | 上下文工程概述 | 已完成 | [#95](https://github.com/datawhalechina/easy-data-x-ai/issues/95) |
 | I7 | PowerContext 的设计与实现 | 开发中 | [#96](https://github.com/datawhalechina/easy-data-x-ai/issues/96) |
 | I8 | 案例场景和测评构建 | 开发中 | [#97](https://github.com/datawhalechina/easy-data-x-ai/issues/97) |
 
