@@ -7,7 +7,7 @@ outline: deep
 
 > Easy Data x AI 课程 · 产业应用篇 · 第 7 节
 
-[《上下文工程概述》](./I6%20课程稿：上下文工程概述.md)介绍了上下文的数据职责、选择方法和使用效果。本章沿着 PowerContext 的处理流程，进一步解释这些要求如何落实到实现中：来源经过什么处理才能成为可用内容，不同类型的内容如何进入请求，以及交接和经验审核为什么需要各自的状态。
+[《上下文工程概述》](./I6%20课程稿：上下文工程概述.md)通过保存、跨会话读取和修订一条决定，说明了上下文的数据职责与使用方法。本章沿着 PowerContext 的处理流程，进一步解释这些要求如何落实到实现中：来源经过什么处理才能成为可用内容，不同类型的内容如何进入请求，以及交接和经验审核为什么需要各自的状态。章末再通过接口实验核对预算、交接和历史读取的行为。
 
 PowerContext 围绕持续推进的工作维护上下文，用稳定的 Scope 关联证据、记忆、交接与结果。人、Agent 或会话更换后，后续参与者仍能从这些记录继续工作。来源处理、请求装配和交接审核围绕这份工作上下文配合，各自决定什么内容可以保存、提供或复用。
 
@@ -21,8 +21,11 @@ PowerContext 围绕持续推进的工作维护上下文，用稳定的 Scope 关
 2. 解释不同类型的上下文如何共享引用机制，又如何按各自规则参与请求。
 3. 理解 PreparedContext 的候选选择、预算裁剪和文本渲染过程。
 4. 说明临时交接、持久交接和审核后的经验分别在什么时候可用。
+5. 对照接口响应检查预算限制、交接提交和条目停用，解释观察到的结果。
 
 ## 1. 来源如何形成可用的上下文
+
+PowerContext 用 Source 保存材料或材料引用，用 Artifact 保存整理后的产物，由 Trigger 根据事件和状态决定处理动作。三者的关系可以记为 `Source → Artifact ← Trigger`：来源提供依据，触发规则控制产物何时生成、更新或使用。理解了这一区别，就能解释为什么采集成功后还可能查不到记忆。
 
 ### 1.1 写入路径取决于内容是否已经明确
 
@@ -168,6 +171,80 @@ Scope 指定资料范围，服务端另行检查访问权限。更换宿主后�
 辅助召回失败时，宿主可以记录原因并继续原任务；显式保存、审核或提交失败时，则必须如实返回失败。前者避免上下文服务中断正在进行的工作，后者保证后续参与者不会把未完成的写入当成已有记录。正常的 `empty` 响应与这些错误也需要分别处理。
 
 SQLite、seekDB 和 OceanBase 后端为这些过程提供持久化与检索能力。对于上层流程，需要保持的是内容版本、引用和有效状态的含义；后端适配细节可以从[持久化模块][persistence]继续阅读。
+
+## 6. 实验：核对上下文接口的行为
+
+下面沿用[《上下文工程概述》](./I6%20课程稿：上下文工程概述.md)中的 PowerContext 1.0.0 服务与 Codex 接入环境，不需要配置生成或向量模型。源码解读采用前面注明的提交，接口练习使用 1.0.0；这里涉及的装配、交接和 Memory 读取操作在该版本中已经提供。尚未接入时，先完成前一章的服务启动、Scope 创建和插件检查。
+
+继续使用原练习 Scope，但新建一条专用 Memory，避免后面的停用操作影响任务对照。请 Agent 显示当前 Scope ID，与终端中的 `POWERCONTEXT_CODEX_SCOPE_ID` 核对，然后发送：
+
+> 请在当前 Scope 显式保存一条 Memory，kind 使用 fact，正文为 `Context lab entry remains available across sessions.`。保存后搜索 `Context lab entry`，展示返回的正文和完整 citation。本次不创建其他记忆。
+
+保存完整 citation，后面的交接与历史读取会用到。若这个 Scope 已有同名测试条目，请先核对并选定一条，避免重复写入影响搜索结果。
+
+### 6.1 对照预算，检查装配结果
+
+前面的 `PreparedContextBuilder` 负责在预算内组织文本。现在通过 HTTP 请求观察它的输出：退出 Codex，回到保留了 Scope 环境变量的终端，执行下面的命令。`assembly` 只选择 Memory，最多取三条，便于排除其他产物类型的影响。
+
+```bash
+curl --fail --silent --show-error \
+  --header 'Content-Type: application/json' \
+  --data "{\"scope_id\":\"$POWERCONTEXT_CODEX_SCOPE_ID\",\"query\":\"Context lab entry\",\"max_bytes\":8000,\"assembly\":{\"sections\":[{\"family\":\"memory\",\"limit\":3}]}}" \
+  http://127.0.0.1:8000/v1/context/prepare
+```
+
+PowerContext 1.0.0 的 `max_bytes` 范围为 512 到 32768，默认是 8000。先记录响应，再把命令中的预算改为 512，比较以下字段：
+
+| 字段 | 要核对的内容 |
+| --- | --- |
+| `schema` | 是否为 `powercontext.prepared-context.v1` |
+| `status` | 有可交付内容时为 `ready`，无可输出内容时为 `empty` |
+| `content_bytes` | 是否等于正文实际 UTF-8 字节数，且不超过请求预算 |
+| `content` | 是否保留历史材料标记和精确引用，正文是否缩短或省略 |
+
+预算覆盖的是完整输出，引用和格式说明也占空间。短记忆在两个预算内都能装下时，结果可能相同；若 512 字节连必要结构都容纳不了，响应会是 `empty`，正文为 `null`，字节数为 0。先确认 8000 字节下能搜到测试条目，再解释缩小预算后的变化。
+
+保持内容和配置不变，以相同查询、`assembly` 和预算重复请求，对照 `status`、`content` 和 `content_bytes`。若结果变化，先检查候选版本与排序；只固定查询文本，还不足以确定装配输入相同。
+
+要进一步观察单条裁剪，可以增加一条包含相同关键词的长测试记忆，保留两条 citation，再调整预算。某条内容放不下时，后面的短条目仍可能入选。这个行为可以对照[装配测试][prepared-tests]中的 `test_text_budget_keeps_later_short_entries_and_reports_candidate_rank` 阅读：测试固定候选及顺序，专门检查预算选择，避免把检索变化误认为装配变化。
+
+这些响应只说明服务准备了什么。命令将结果显示在终端，并没有把它送入模型请求。注入、使用和任务收益仍按《上下文工程概述》中的证据分别判断。
+
+### 6.2 先读取临时交接，再提交保存
+
+重新启动 Codex，确认仍绑定原 Scope。读取测试 Memory 后，请 Agent 根据本次练习的实际进度准备交接：
+
+> 请为本次上下文接口检查准备交接，列出已经验证的结果、尚未检查的项目和下一步，关联测试 Memory 的 citation。使用 handoff_current_work 准备后展示返回结果，暂不调用 commit_handoff。尚未执行的检查请保留为待办。
+
+核对目标、进度和证据后，让 Agent 取出返回结果中的 `handoff` 对象，完整传给 `continue_handoff` 的 `prepared` 字段，并将 `selection` 设为 `prepared`。这一步应能读取定稿后的内容，但此时还没有保存新的 Handoff 修订。可以结合工具调用记录，检查这次读取没有发生提交。
+
+确认内容准确后，再明确要求调用 `commit_handoff`，保存返回的完整 `reference`。在新会话中，将该引用传给 `continue_handoff` 的 `revision` 字段，`selection` 设为 `exact`，核对读到的目标、已验证进度和待办是否一致。使用具体修订，可以避免把之后更新的交接误认为本次结果。
+
+实验中的两个读取入口，对应前面的临时对象和持久版本。`continue_handoff` 返回内容，只能确认接手者读到了交接；需要记录接手意愿时，还应通过 `acknowledge_handoff` 单独表达接受、待澄清或拒绝。
+
+### 6.3 停用条目，再读取原引用
+
+完成预算和交接检查后，再停用本章的测试 Memory。先读取当前条目，保留完整 citation，然后要求 Agent 使用 `retire_memory_entry` 停用它，并说明这是实验结束后的清理。这里只停用指定测试条目。
+
+分别核对当前搜索、当前状态与旧引用：
+
+| 读取方式 | 预期结果 |
+| --- | --- |
+| 用原关键词调用 `search_memory` | 不再返回被停用的条目 |
+| 用 `list_memory_entries` 并设置 `include_inactive: true` | 该条目的当前状态为 `inactive` |
+| 用停用前保存的 citation 调用 `get_memory_entry` | 仍能读取当时的正文和状态 |
+
+旧引用读取的是当时的快照，其中仍可能显示 `active`。这与当前条目已经停用并不矛盾：准入规则控制当前召回，精确引用保留历史核对能力。停用也不会删除持久交接中保存的旧证据引用。
+
+如果做过长文本扩展实验，也请逐条核对后停用新增的测试记忆。保留预算响应、临时交接对象、提交后的引用，以及停用前后的读取结果，就能把本章介绍的边界与实际返回值对应起来。
+
+### 6.4 可选：核对矛盾条目的处理
+
+另建独立 Scope，用同一关键词保存两条互不兼容的约束，并注明它们分别来自尚未定稿的提案。要求 Agent 搜索并列出双方的完整 citation，说明分歧以及需要你确认的事项。核对两条记录都已返回，避免把漏检误认为冲突已经解决。
+
+由你确认最终采用哪条约束，再要求 Agent 修订相应记录、停用另一条，并保留决定依据。重新搜索应只返回仍然有效的结论；用两个旧 citation 则仍能核对提案原文。若 Agent 只按写入时间选择较新的记录，需要纠正选择依据。
+
+这个练习验证的是显式核对、修订和停用。保存两条 Memory 不会自动触发冲突裁决，也不会把它们转入 Experience 或 Skill 的候选审核流程。
 
 [source-baseline]: https://github.com/oceanbase/powercontext/tree/61ebcd85a6f8ad51eb72ac64f5e4eeac6f7e18e9
 [core-concepts]: https://github.com/oceanbase/powercontext/blob/61ebcd85a6f8ad51eb72ac64f5e4eeac6f7e18e9/docs/zh/docs/get-started/core-concepts.md
