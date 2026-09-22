@@ -274,7 +274,14 @@ python code/D1/d1_1_base.py
     <img src="https://avatars.githubusercontent.com/u/13233790?v=4&s=144" width="72" height="72" alt="liboyang0730" style="border-radius:50%;" />
   </a><br />
   <a href="https://github.com/liboyang0730" title="打开 liboyang0730 的 GitHub 主页"><kbd><strong>liboyang073…</strong></kbd></a><br />
-  <sub>118 commits<br />15 merged PRs</sub>
+  <sub>121 commits<br />15 merged PRs</sub>
+</td>
+<td align="center" valign="top" width="104">
+  <a href="https://github.com/knqiufan" title="knqiufan">
+    <img src="https://avatars.githubusercontent.com/u/34114995?v=4&s=144" width="72" height="72" alt="knqiufan" style="border-radius:50%;" />
+  </a><br />
+  <a href="https://github.com/knqiufan" title="打开 knqiufan 的 GitHub 主页"><kbd><strong>knqiufan</strong></kbd></a><br />
+  <sub>26 commits<br />16 merged PRs</sub>
 </td>
 <td align="center" valign="top" width="104">
   <a href="https://github.com/Kratos-Lee" title="Kratos-Lee">
@@ -284,11 +291,11 @@ python code/D1/d1_1_base.py
   <sub>24 commits<br />11 merged PRs</sub>
 </td>
 <td align="center" valign="top" width="104">
-  <a href="https://github.com/knqiufan" title="knqiufan">
-    <img src="https://avatars.githubusercontent.com/u/34114995?v=4&s=144" width="72" height="72" alt="knqiufan" style="border-radius:50%;" />
+  <a href="https://github.com/PsiACE" title="PsiACE">
+    <img src="https://avatars.githubusercontent.com/u/36896360?v=4&s=144" width="72" height="72" alt="PsiACE" style="border-radius:50%;" />
   </a><br />
-  <a href="https://github.com/knqiufan" title="打开 knqiufan 的 GitHub 主页"><kbd><strong>knqiufan</strong></kbd></a><br />
-  <sub>23 commits<br />15 merged PRs</sub>
+  <a href="https://github.com/PsiACE" title="打开 PsiACE 的 GitHub 主页"><kbd><strong>PsiACE</strong></kbd></a><br />
+  <sub>7 commits<br />2 merged PRs</sub>
 </td>
 <td align="center" valign="top" width="104">
   <a href="https://github.com/haoye2" title="haoye2">
@@ -318,6 +325,8 @@ python code/D1/d1_1_base.py
   <a href="https://github.com/ep-12221" title="打开 ep-12221 的 GitHub 主页"><kbd><strong>ep‑12221</strong></kbd></a><br />
   <sub>1 commit<br />1 merged PR</sub>
 </td>
+</tr>
+<tr>
 <td align="center" valign="top" width="104">
   <a href="https://github.com/hu-qi" title="hu-qi">
     <img src="https://avatars.githubusercontent.com/u/17986122?v=4&s=144" width="72" height="72" alt="hu-qi" style="border-radius:50%;" />
@@ -325,8 +334,6 @@ python code/D1/d1_1_base.py
   <a href="https://github.com/hu-qi" title="打开 hu-qi 的 GitHub 主页"><kbd><strong>hu‑qi</strong></kbd></a><br />
   <sub>1 commit<br />1 merged PR</sub>
 </td>
-</tr>
-<tr>
 <td align="center" valign="top" width="104">
   <a href="https://github.com/Iridescent115" title="Iridescent115">
     <img src="https://avatars.githubusercontent.com/u/209439429?v=4&s=144" width="72" height="72" alt="Iridescent115" style="border-radius:50%;" />
@@ -376,6 +383,8 @@ python code/D1/d1_1_base.py
   <a href="https://github.com/pzb5471" title="打开 pzb5471 的 GitHub 主页"><kbd><strong>pzb5471</strong></kbd></a><br />
   <sub>1 commit<br />1 merged PR</sub>
 </td>
+</tr>
+<tr>
 <td align="center" valign="top" width="104">
   <a href="https://github.com/webup" title="webup">
     <img src="https://avatars.githubusercontent.com/u/2936504?v=4&s=144" width="72" height="72" alt="webup" style="border-radius:50%;" />
@@ -383,8 +392,6 @@ python code/D1/d1_1_base.py
   <a href="https://github.com/webup" title="打开 webup 的 GitHub 主页"><kbd><strong>webup</strong></kbd></a><br />
   <sub>1 commit<br />1 merged PR</sub>
 </td>
-</tr>
-<tr>
 <td align="center" valign="top" width="104">
   <a href="https://github.com/LINxiansheng" title="LINxiansheng">
     <img src="https://avatars.githubusercontent.com/u/18351861?v=4&s=144" width="72" height="72" alt="LINxiansheng" style="border-radius:50%;" />
