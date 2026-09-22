@@ -274,7 +274,7 @@ python code/D1/d1_1_base.py
     <img src="https://avatars.githubusercontent.com/u/13233790?v=4&s=144" width="72" height="72" alt="liboyang0730" style="border-radius:50%;" />
   </a><br />
   <a href="https://github.com/liboyang0730" title="打开 liboyang0730 的 GitHub 主页"><kbd><strong>liboyang073…</strong></kbd></a><br />
-  <sub>120 commits<br />15 merged PRs</sub>
+  <sub>121 commits<br />15 merged PRs</sub>
 </td>
 <td align="center" valign="top" width="104">
   <a href="https://github.com/knqiufan" title="knqiufan">
@@ -291,18 +291,18 @@ python code/D1/d1_1_base.py
   <sub>24 commits<br />11 merged PRs</sub>
 </td>
 <td align="center" valign="top" width="104">
+  <a href="https://github.com/PsiACE" title="PsiACE">
+    <img src="https://avatars.githubusercontent.com/u/36896360?v=4&s=144" width="72" height="72" alt="PsiACE" style="border-radius:50%;" />
+  </a><br />
+  <a href="https://github.com/PsiACE" title="打开 PsiACE 的 GitHub 主页"><kbd><strong>PsiACE</strong></kbd></a><br />
+  <sub>7 commits<br />2 merged PRs</sub>
+</td>
+<td align="center" valign="top" width="104">
   <a href="https://github.com/haoye2" title="haoye2">
     <img src="https://avatars.githubusercontent.com/u/199622891?v=4&s=144" width="72" height="72" alt="haoye2" style="border-radius:50%;" />
   </a><br />
   <a href="https://github.com/haoye2" title="打开 haoye2 的 GitHub 主页"><kbd><strong>haoye2</strong></kbd></a><br />
   <sub>6 commits<br />6 merged PRs</sub>
-</td>
-<td align="center" valign="top" width="104">
-  <a href="https://github.com/PsiACE" title="PsiACE">
-    <img src="https://avatars.githubusercontent.com/u/36896360?v=4&s=144" width="72" height="72" alt="PsiACE" style="border-radius:50%;" />
-  </a><br />
-  <a href="https://github.com/PsiACE" title="打开 PsiACE 的 GitHub 主页"><kbd><strong>PsiACE</strong></kbd></a><br />
-  <sub>6 commits<br />1 merged PR</sub>
 </td>
 <td align="center" valign="top" width="104">
   <a href="https://github.com/Terminator666666" title="Terminator666666">
