@@ -100,8 +100,8 @@
 | I4 | File SQL for AI Agent | 已完成 | [#93](https://github.com/datawhalechina/easy-data-x-ai/issues/93) |
 | I5 | AI 列 —— 模型驱动派生数据的自动维护 | 已完成 | [#94](https://github.com/datawhalechina/easy-data-x-ai/issues/94) |
 | I6 | 上下文工程概述 | 已完成 | [#95](https://github.com/datawhalechina/easy-data-x-ai/issues/95) |
-| I7 | PowerContext 的设计与实现 | 开发中 | [#96](https://github.com/datawhalechina/easy-data-x-ai/issues/96) |
-| I8 | 案例场景和测评构建 | 开发中 | [#97](https://github.com/datawhalechina/easy-data-x-ai/issues/97) |
+| I7 | PowerContext 的设计与实现 | 已完成 | [#96](https://github.com/datawhalechina/easy-data-x-ai/issues/96) |
+| I8 | 案例场景和测评构建 | 已完成 | [#97](https://github.com/datawhalechina/easy-data-x-ai/issues/97) |
 
 > I = 产业应用篇，Industry Practice（产业实践）。本篇连接现有 D2、D3、D4 的工程内容，补充产业技术主题、场景设计和测评方法。
 
