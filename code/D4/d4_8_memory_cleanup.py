@@ -153,9 +153,6 @@ def cleanup_memories(
     actions: list[str] = []
 
     for mem in list(store.iter_all(user_id=user_id)):
-        if mem.archived:
-            continue
-
         retention = calc_retention(mem, now)
         idle_days = (now - mem.last_accessed_at).days
         protected = mem.protected
@@ -166,6 +163,10 @@ def cleanup_memories(
             actions.append(f"DELETE {mem.id} R={retention:.2f} idle={idle_days}d")
             if not dry_run:
                 store.delete(mem.id, requester_id=user_id)
+            continue
+
+        # 归档项仍需检查硬淘汰条件，但不重复归档或计入热记忆。
+        if mem.archived:
             continue
 
         # 保护字段若已达硬删条件：跳过删除，最多归档
