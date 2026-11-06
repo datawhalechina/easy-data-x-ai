@@ -22,25 +22,7 @@ P2 把 RAG 拆成数据准备、查询分析、检索、融合重排、上下文
 # ============================================================
 ```
 
-> 复制 `.env.example` 为 `.env`，并在 `.env` 文件中填写你的真实 API Key，即可直接执行对应章节的示例代码。
->
-> 推荐大家可以通过在[硅基流动](https://www.siliconflow.cn/)上注册账号，获取 API 密钥，使用免费 Embedding 模型 `BAAI/bge-m3` 来体验向量化和检索。
-
-```
-cd easy-data-x-ai/code
-
-# 安装依赖
-pip install --upgrade -r requirements.txt
-
-# 复制 .env.example 为 .env
-cp .env.example .env
-
-# 在 .env 文件中填写你的真实 API Key
-vim .env
-
-# 运行示例代码
-python D2/d2_1_ingest.py
-```
+> **运行 D2 示例前请先看：**从仓库根目录按 [`code/README.md`](../../code/README.md) 安装依赖并准备 SeekDB。`d2_1` 至 `d2_4` 的核心演示不需要外部模型 API Key；`d2_5` 的语义分块对比需要 `SILICONFLOW_API_KEY`。`d2_1_ingest.py` 会删除并重建当前数据库中的 `d2_knowledge_base` 集合，因此只对隔离的演示库运行；Server 模式的 `SEEKDB_ALLOW_DESTRUCTIVE=1` 仅可用于演示/测试库。
 
 ## 开场：桥的另一端是什么？
 
@@ -661,157 +643,53 @@ seekdb 就是基于这个判断做的。当你创建一个数据集合时，你�
 
 光说不练假把式。我们来看看实际跑起来到底有多快。
 
-## 五分钟跑通：你的第一个混合搜索
+## 最小可复现：跑通混合搜索
 
-下面这段代码可以在你的笔记本电脑上直接运行。五分钟内，你就能体验一个同时支持向量搜索和全文搜索的 AI 数据层。
+本节直接运行仓库里的 D2 示例脚本。这样用到的 API、数据库连接方式和教程其余部分保持一致，也能看到每个检索信号实际返回什么。
 
-### 第一步：安装
+### 运行前准备
 
-```python
-# 终端运行
-# pip install pyseekdb
-```
+1. 在电脑上安装 Python 3.11，并在**仓库根目录**按 [`code/README.md`](../../code/README.md) 安装依赖、启动并检查 SeekDB。Windows，或本机无法加载 Embedded 原生扩展的 macOS/Linux，请使用 README 中的 Docker Server 步骤。
+2. D2 示例默认使用本地 Embedded 数据库；使用 Server 时，按 README 配置 `SEEKDB_MODE`、`SEEKDB_HOST`、`SEEKDB_PORT` 和 `SEEKDB_DATABASE`。若本地用户没有专用演示库，请先按 README 建立隔离库。不要让示例连接生产库或共享库。
+3. 在 Server 模式中，只有确认 `SEEKDB_DATABASE` 指向隔离演示库后，才设置 `SEEKDB_ALLOW_DESTRUCTIVE=1`。`d2_1_ingest.py` 会重建 `d2_knowledge_base` 集合；不要对含有其他数据的数据库运行。
 
-### 第二步：创建集合并写入数据
+### 第一步：建立演示知识库
 
-```python
-from pyseekdb import SeekDB
+从仓库根目录运行：
 
-db = SeekDB()
+~~~bash
+python code/D2/d2_1_ingest.py
+~~~
 
-# 创建一个支持向量和全文搜索的集合
-db.create_collection(
-    name="knowledge_base",
-    vector_column="content",     # 对 content 列建向量索引
-    fulltext_columns=["content"] # 对 content 列建全文索引
-)
+脚本会切分并写入 8 条示例文档。看到“原始文档数：8”“seekdb 中实际存储条数：8”，且脚本显示写入完成后，再继续下一步。若脚本提示缺少知识库配置或服务连接失败，先按 `code/README.md` 的 SeekDB 准备与自检步骤处理，不要自行拼写仓库中不存在的旧版 API 调用。
 
-# 准备示例文档
-docs = [
-    {
-        "content": "错误码 E-4012 表示数据库连接超时。解决方案：检查网络配置，确认数据库服务端口是否开放，建议超时时间设置为 30 秒。",
-        "category": "error_codes",
-        "version": "4.2"
-    },
-    {
-        "content": "错误码 E-4013 表示认证失败。解决方案：检查用户名和密码是否正确，确认账户是否被锁定。",
-        "category": "error_codes",
-        "version": "4.2"
-    },
-    {
-        "content": "数据库查询性能优化指南：合理使用索引可以将查询速度提升 10 倍以上。建议对高频查询的 WHERE 条件列建立索引。",
-        "category": "best_practices",
-        "version": "4.2"
-    },
-    {
-        "content": "访问控制架构设计：基于 RBAC 模型实现用户权限管理，支持角色继承和细粒度的资源级权限控制。",
-        "category": "architecture",
-        "version": "4.1"
-    },
-    {
-        "content": "OB-4.2.1 版本新特性：支持在线 DDL 操作、改进了并行查询引擎、修复了分区表在特定条件下的数据倾斜问题。",
-        "category": "release_notes",
-        "version": "4.2.1"
-    },
-]
+### 第二步：观察混合搜索的三个信号
 
-# 写入数据
-db.insert(collection_name="knowledge_base", documents=docs)
-```
+~~~bash
+python code/D2/d2_3_hybrid_search.py
+~~~
 
-### 第三步：执行混合查询
+脚本会打印三组结果：
 
-```python
-# 混合查询：同时使用向量搜索 + 全文搜索
-results = db.hybrid_search(
-    collection_name="knowledge_base",
-    query_text="错误码 E-4012 的解决方案",
-    top_k=3
-)
+- **精确编号**：全文条件查找 `E-4012`，同时用向量条件检索查询句，再通过 Reciprocal Rank Fusion（RRF）融合两个结果列表。
+- **语义示例**：全文条件查找包含“权限”的文档，同时用向量条件检索“怎么设计用户权限”。示例文档本身含有“用户权限”，所以这组结果展示的是关键词与向量信号协同，不能单独证明“没有共同关键词时仍能靠向量命中”。
+- **版本过滤**：全文和向量两路都应用 `version=4.2` 过滤；检查打印结果中的每条元数据，确认版本条件没有被遗漏。
 
-for r in results:
-    print(f"[相关度: {r['score']:.3f}]")
-    print(r["content"])
-    print("---")
-```
+这些调用都在 `code/D2/d2_3_hybrid_search.py` 的 `run_demo()` 中。实际方法签名是 `collection.hybrid_search(query=..., knn=..., rank={"rrf": {}}, n_results=...)`；不要把它改写成 `db.hybrid_search(query_text=..., top_k=...)` 一类仓库中不存在的调用。
 
-运行这段代码，你会看到 E-4012 的文档被精确排在第一位——不是因为它“语义最相近”（E-4013 语义上也很近），而是因为全文搜索精确匹配了“E-4012”这个关键词，和向量搜索的语义分数一起参与了排序。
+### 第三步：与纯向量检索作对照
 
-现在试试另一个查询：
+~~~bash
+python code/D2/d2_2_vector_search.py
+python code/D2/d2_4_compare.py
+~~~
 
-```python
-# 语义查询：用户的措辞和文档标题完全不同
-results = db.hybrid_search(
-    collection_name="knowledge_base",
-    query_text="怎么设计用户权限",
-    top_k=3
-)
+第一个脚本只执行向量检索；第二个脚本用相同知识库并列打印纯向量和混合检索结果。结果排序会受当前 SeekDB / Embedding 配置影响，请以本机实际输出为准，不要把单次运行的排名写成固定结论。要判断哪种方式更合适，应结合查询类型和多条样例，而不是只看一个错误码。
 
-for r in results:
-    print(f"[相关度: {r['score']:.3f}]")
-    print(r["content"])
-    print("---")
-```
+### 本节如何衔接 D3
 
-这次你会看到“访问控制架构设计”的文档被找到了——尽管用户说的是“用户权限”，文档写的是“访问控制架构”，两者之间没有共同的关键词。这是向量搜索的功劳，它理解了语义上的等价性。
+D2 用小型示例观察数据层的检索路径；D3 再用离线数据集、评测指标和失败案例比较检索策略。需要继续学习时，从仓库根目录运行 `python code/D3/d3_5_evaluate.py`；该离线评测不需要 API Key 或 SeekDB，报告生成在 `code/D3/reports/`，更多说明见 `code/README.md`。不要从本节的一次排名推断某种检索方案在所有数据上都更好。
 
-**一个查询，两种搜索能力同时工作，结果在引擎内部融合。** 你不需要写任何合并逻辑，不需要维护多个系统，不需要操心数据同步。
-
-### 加上结构化过滤
-
-```python
-# 混合查询 + 结构化过滤：只在 4.2 版本的文档中搜索
-results = db.hybrid_search(
-    collection_name="knowledge_base",
-    query_text="性能优化",
-    top_k=3,
-    filters={"version": "4.2"}
-)
-```
-
-向量搜索 + 全文搜索 + 关系过滤，三种能力在一条查询中完成。这就是“一个厨房，所有菜都能做”的实际体验。
-
-## 对比一下：纯向量搜索 vs 混合搜索
-
-为了让你直观感受差距，我们跑一个简单的对比实验。同样的数据，同样的查询，分别用纯向量搜索和混合搜索，看看结果有什么不同。
-
-```python
-# 纯向量搜索
-vector_only = db.vector_search(
-    collection_name="knowledge_base",
-    query_text="错误码 E-4012",
-    top_k=3
-)
-
-# 混合搜索
-hybrid = db.hybrid_search(
-    collection_name="knowledge_base",
-    query_text="错误码 E-4012",
-    top_k=3
-)
-
-print("=== 纯向量搜索结果 ===")
-for i, r in enumerate(vector_only):
-    print(f"{i+1}. {r['content'][:50]}...")
-
-print("\n=== 混合搜索结果 ===")
-for i, r in enumerate(hybrid):
-    print(f"{i+1}. {r['content'][:50]}...")
-```
-
-你大概率会看到类似这样的对比：
-
-| 排名 | 纯向量搜索 | 混合搜索 |
-| --- | --- | --- |
-| 1 | E-4013 认证失败（语义最近） | **E-4012 连接超时（精确命中）** |
-| 2 | E-4012 连接超时 | E-4013 认证失败（语义补充） |
-| 3 | 查询性能优化（也沾点边） | OB-4.2.1 版本新特性 |
-
-纯向量搜索把 E-4013 排在了 E-4012 前面——因为在向量空间中它们几乎一样近，排序带有随机性。但混合搜索因为有全文搜索的精确匹配信号，把 E-4012 精准地推到了第一位。
-
-一个错误码搞错，如果这个结果直接被 Agent 用来回答用户，用户得到的就是**错误的解决方案**。这不是“效果差一点”的问题，是“对和错”的问题。
-
-这就是 D3 会更深入展开的对比实验。在 D3 中，你会用更大规模的真实数据、更多样的查询类型来做系统性对比。到时候你会发现，在包含专有名词、版本号、技术术语的查询中，混合搜索和纯向量搜索的差距是**肉眼可见的**。
 
 ## 回到全局：这件事在整个课程中的位置
 
