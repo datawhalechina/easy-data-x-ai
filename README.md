@@ -290,7 +290,7 @@ python code/D1/d1_1_base.py
     <img src="https://avatars.githubusercontent.com/u/13233790?v=4&s=144" width="72" height="72" alt="liboyang0730" style="border-radius:50%;" />
   </a><br />
   <a href="https://github.com/liboyang0730" title="打开 liboyang0730 的 GitHub 主页"><kbd><strong>liboyang073…</strong></kbd></a><br />
-  <sub>123 commits<br />16 merged PRs</sub>
+  <sub>125 commits<br />16 merged PRs</sub>
 </td>
 <td align="center" valign="top" width="104">
   <a href="https://github.com/Kratos-Lee" title="Kratos-Lee">
@@ -321,6 +321,13 @@ python code/D1/d1_1_base.py
   <sub>6 commits<br />6 merged PRs</sub>
 </td>
 <td align="center" valign="top" width="104">
+  <a href="https://github.com/LINsummoon" title="LINsummoon">
+    <img src="https://avatars.githubusercontent.com/u/348227918?v=4&s=144" width="72" height="72" alt="LINsummoon" style="border-radius:50%;" />
+  </a><br />
+  <a href="https://github.com/LINsummoon" title="打开 LINsummoon 的 GitHub 主页"><kbd><strong>LINsummoon</strong></kbd></a><br />
+  <sub>5 commits</sub>
+</td>
+<td align="center" valign="top" width="104">
   <a href="https://github.com/Terminator666666" title="Terminator666666">
     <img src="https://avatars.githubusercontent.com/u/104662484?v=4&s=144" width="72" height="72" alt="Terminator666666" style="border-radius:50%;" />
   </a><br />
@@ -334,6 +341,8 @@ python code/D1/d1_1_base.py
   <a href="https://github.com/amber-moe" title="打开 amber-moe 的 GitHub 主页"><kbd><strong>amber‑moe</strong></kbd></a><br />
   <sub>1 commit<br />1 merged PR</sub>
 </td>
+</tr>
+<tr>
 <td align="center" valign="top" width="104">
   <a href="https://github.com/ep-12221" title="ep-12221">
     <img src="https://avatars.githubusercontent.com/u/149382359?v=4&s=144" width="72" height="72" alt="ep-12221" style="border-radius:50%;" />
@@ -341,8 +350,6 @@ python code/D1/d1_1_base.py
   <a href="https://github.com/ep-12221" title="打开 ep-12221 的 GitHub 主页"><kbd><strong>ep‑12221</strong></kbd></a><br />
   <sub>1 commit<br />1 merged PR</sub>
 </td>
-</tr>
-<tr>
 <td align="center" valign="top" width="104">
   <a href="https://github.com/hu-qi" title="hu-qi">
     <img src="https://avatars.githubusercontent.com/u/17986122?v=4&s=144" width="72" height="72" alt="hu-qi" style="border-radius:50%;" />
@@ -372,12 +379,28 @@ python code/D1/d1_1_base.py
   <sub>1 commit<br />1 merged PR</sub>
 </td>
 <td align="center" valign="top" width="104">
+  <a href="https://github.com/jiabaow326-cpu" title="jiabaow326-cpu">
+    <img src="https://avatars.githubusercontent.com/u/274698821?v=4&s=144" width="72" height="72" alt="jiabaow326-cpu" style="border-radius:50%;" />
+  </a><br />
+  <a href="https://github.com/jiabaow326-cpu" title="打开 jiabaow326-cpu 的 GitHub 主页"><kbd><strong>jiabaow326‑…</strong></kbd></a><br />
+  <sub>1 commit<br />1 merged PR</sub>
+</td>
+<td align="center" valign="top" width="104">
   <a href="https://github.com/ksk2023" title="ksk2023">
     <img src="https://avatars.githubusercontent.com/u/154514711?v=4&s=144" width="72" height="72" alt="ksk2023" style="border-radius:50%;" />
   </a><br />
   <a href="https://github.com/ksk2023" title="打开 ksk2023 的 GitHub 主页"><kbd><strong>ksk2023</strong></kbd></a><br />
   <sub>1 commit<br />1 merged PR</sub>
 </td>
+<td align="center" valign="top" width="104">
+  <a href="https://github.com/lux-liang" title="lux-liang">
+    <img src="https://avatars.githubusercontent.com/u/249971141?v=4&s=144" width="72" height="72" alt="lux-liang" style="border-radius:50%;" />
+  </a><br />
+  <a href="https://github.com/lux-liang" title="打开 lux-liang 的 GitHub 主页"><kbd><strong>lux‑liang</strong></kbd></a><br />
+  <sub>1 commit<br />1 merged PR</sub>
+</td>
+</tr>
+<tr>
 <td align="center" valign="top" width="104">
   <a href="https://github.com/nha114514" title="nha114514">
     <img src="https://avatars.githubusercontent.com/u/262920247?v=4&s=144" width="72" height="72" alt="nha114514" style="border-radius:50%;" />
@@ -399,8 +422,6 @@ python code/D1/d1_1_base.py
   <a href="https://github.com/pzb5471" title="打开 pzb5471 的 GitHub 主页"><kbd><strong>pzb5471</strong></kbd></a><br />
   <sub>1 commit<br />1 merged PR</sub>
 </td>
-</tr>
-<tr>
 <td align="center" valign="top" width="104">
   <a href="https://github.com/webup" title="webup">
     <img src="https://avatars.githubusercontent.com/u/2936504?v=4&s=144" width="72" height="72" alt="webup" style="border-radius:50%;" />
