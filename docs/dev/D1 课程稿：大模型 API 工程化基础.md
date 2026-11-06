@@ -289,6 +289,8 @@ def query_knowledge_base(query: str) -> str:
     return search_knowledge_base(query)
 ```
 
+> 可运行版本见 [`code/D1/d1_4_tool_use_mock.py`](https://github.com/datawhalechina/easy-data-x-ai/blob/main/code/D1/d1_4_tool_use_mock.py)。该示例的模拟检索按明确短语匹配（如“检索方式”“部署模式”“pyseekdb”）；只包含一个共同字的查询不会误取其他条目，未命中时也不会把整个模拟知识库作为答案依据。
+
 对比原生 SDK 需要手写一大段 JSON Schema，LangChain 的方式更 Pythonic：
 
 + **函数名**就是工具名称

@@ -121,6 +121,14 @@ python d1_1_base.py
 | X5 | 需要安装 MCP 依赖，并准备好 X2 的本地数据 |
 | P5 | 默认使用确定性离线 Agent；LangSmith 上报为可选功能 |
 
+`D1/d1_4_tool_use_mock.py` 使用本地模拟知识库，但仍会调用 SiliconFlow 上的真实模型，因此运行整个示例需要 API Key；检索规则本身不依赖 API 或数据库，可在 `code/` 目录用标准库验证：
+
+```bash
+python -m unittest D1.test_mock_knowledge_base
+```
+
+模拟检索仅按明确的产品短语匹配，未命中时返回提示，不会把所有无关条目一并交给模型。
+
 ### seekdb 准备（OceanBase）
 
 Embedded 模式依赖能在当前平台加载的 `pylibseekdb`。Windows 请使用 seekdb Server；macOS / Linux 没有匹配的原生扩展时也使用 Server。

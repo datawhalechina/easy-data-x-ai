@@ -8,25 +8,17 @@ from langchain.chat_models import init_chat_model
 from langchain_core.tools import tool
 
 if __package__:
+    from .mock_knowledge_base import search_mock_knowledge_base
     from .tool_call_loop import run_tool_call_loop
 else:
+    from mock_knowledge_base import search_mock_knowledge_base
     from tool_call_loop import run_tool_call_loop
 
 
 @tool
 def query_knowledge_base(query: str) -> str:
     """从模拟知识库中检索产品功能、技术文档或操作指南。"""
-    fake_docs = {
-        "检索方式": "seekdb 支持关键词、语义向量和混合检索。",
-        "部署模式": "seekdb 支持嵌入模式和服务器模式。",
-        "SDK": "pyseekdb 是 seekdb 的 Python SDK，支持 Schemaless API。",
-    }
-    results = [
-        doc
-        for key, doc in fake_docs.items()
-        if key in query or any(word in query for word in key)
-    ]
-    return "\n\n".join(results or fake_docs.values())
+    return search_mock_knowledge_base(query)
 
 
 def print_tool_result(tool_call, result):
