@@ -55,10 +55,7 @@ def deterministic_aggregate(candidates: list, query: str) -> dict:
             # 多个 active → 并存偏好，全部保留
             for am in active_mems:
                 aggregated.append(am)
-        elif inactive_mems:
-            # 只有 inactives → 返回最新的
-            latest = max(inactive_mems, key=lambda m: m.get("created_at", ""))
-            aggregated.append(latest)
+        # 没有 active 版本时不回填历史记忆，避免已失效的事实重新进入 Prompt。
 
     return {
         "strategy": "deterministic",
