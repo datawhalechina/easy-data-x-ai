@@ -290,7 +290,7 @@ python code/D1/d1_1_base.py
     <img src="https://avatars.githubusercontent.com/u/13233790?v=4&s=144" width="72" height="72" alt="liboyang0730" style="border-radius:50%;" />
   </a><br />
   <a href="https://github.com/liboyang0730" title="打开 liboyang0730 的 GitHub 主页"><kbd><strong>liboyang073…</strong></kbd></a><br />
-  <sub>125 commits<br />16 merged PRs</sub>
+  <sub>126 commits<br />16 merged PRs</sub>
 </td>
 <td align="center" valign="top" width="104">
   <a href="https://github.com/Kratos-Lee" title="Kratos-Lee">
@@ -328,12 +328,21 @@ python code/D1/d1_1_base.py
   <sub>5 commits</sub>
 </td>
 <td align="center" valign="top" width="104">
+  <a href="https://github.com/lux-liang" title="lux-liang">
+    <img src="https://avatars.githubusercontent.com/u/249971141?v=4&s=144" width="72" height="72" alt="lux-liang" style="border-radius:50%;" />
+  </a><br />
+  <a href="https://github.com/lux-liang" title="打开 lux-liang 的 GitHub 主页"><kbd><strong>lux‑liang</strong></kbd></a><br />
+  <sub>2 commits<br />2 merged PRs</sub>
+</td>
+<td align="center" valign="top" width="104">
   <a href="https://github.com/Terminator666666" title="Terminator666666">
     <img src="https://avatars.githubusercontent.com/u/104662484?v=4&s=144" width="72" height="72" alt="Terminator666666" style="border-radius:50%;" />
   </a><br />
   <a href="https://github.com/Terminator666666" title="打开 Terminator666666 的 GitHub 主页"><kbd><strong>Terminator6…</strong></kbd></a><br />
   <sub>2 commits<br />1 merged PR</sub>
 </td>
+</tr>
+<tr>
 <td align="center" valign="top" width="104">
   <a href="https://github.com/amber-moe" title="amber-moe">
     <img src="https://avatars.githubusercontent.com/u/42762957?v=4&s=144" width="72" height="72" alt="amber-moe" style="border-radius:50%;" />
@@ -341,8 +350,6 @@ python code/D1/d1_1_base.py
   <a href="https://github.com/amber-moe" title="打开 amber-moe 的 GitHub 主页"><kbd><strong>amber‑moe</strong></kbd></a><br />
   <sub>1 commit<br />1 merged PR</sub>
 </td>
-</tr>
-<tr>
 <td align="center" valign="top" width="104">
   <a href="https://github.com/ep-12221" title="ep-12221">
     <img src="https://avatars.githubusercontent.com/u/149382359?v=4&s=144" width="72" height="72" alt="ep-12221" style="border-radius:50%;" />
@@ -390,13 +397,6 @@ python code/D1/d1_1_base.py
     <img src="https://avatars.githubusercontent.com/u/154514711?v=4&s=144" width="72" height="72" alt="ksk2023" style="border-radius:50%;" />
   </a><br />
   <a href="https://github.com/ksk2023" title="打开 ksk2023 的 GitHub 主页"><kbd><strong>ksk2023</strong></kbd></a><br />
-  <sub>1 commit<br />1 merged PR</sub>
-</td>
-<td align="center" valign="top" width="104">
-  <a href="https://github.com/lux-liang" title="lux-liang">
-    <img src="https://avatars.githubusercontent.com/u/249971141?v=4&s=144" width="72" height="72" alt="lux-liang" style="border-radius:50%;" />
-  </a><br />
-  <a href="https://github.com/lux-liang" title="打开 lux-liang 的 GitHub 主页"><kbd><strong>lux‑liang</strong></kbd></a><br />
   <sub>1 commit<br />1 merged PR</sub>
 </td>
 </tr>
