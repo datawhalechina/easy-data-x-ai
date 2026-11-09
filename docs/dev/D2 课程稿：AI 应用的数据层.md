@@ -22,7 +22,7 @@ P2 把 RAG 拆成数据准备、查询分析、检索、融合重排、上下文
 # ============================================================
 ```
 
-> **运行 D2 示例前请先看：**从仓库根目录按 [`code/README.md`](../../code/README.md) 安装依赖并准备 SeekDB。`d2_1` 至 `d2_4` 的核心演示不需要外部模型 API Key；`d2_5` 的语义分块对比需要 `SILICONFLOW_API_KEY`。`d2_1_ingest.py` 会删除并重建当前数据库中的 `d2_knowledge_base` 集合，因此只对隔离的演示库运行；Server 模式的 `SEEKDB_ALLOW_DESTRUCTIVE=1` 仅可用于演示/测试库。
+> **运行 D2 示例前请先看：**从仓库根目录按 [`code/README.md`](https://github.com/datawhalechina/easy-data-x-ai/blob/main/code/README.md) 安装依赖并准备 SeekDB。`d2_1` 至 `d2_4` 的核心演示不需要外部模型 API Key；`d2_5` 的语义分块对比需要 `SILICONFLOW_API_KEY`。`d2_1_ingest.py` 会删除并重建当前数据库中的 `d2_knowledge_base` 集合，因此只对隔离的演示库运行；Server 模式的 `SEEKDB_ALLOW_DESTRUCTIVE=1` 仅可用于演示/测试库。
 
 ## 开场：桥的另一端是什么？
 
@@ -649,7 +649,7 @@ seekdb 就是基于这个判断做的。当你创建一个数据集合时，你�
 
 ### 运行前准备
 
-1. 在电脑上安装 Python 3.11，并在**仓库根目录**按 [`code/README.md`](../../code/README.md) 安装依赖、启动并检查 SeekDB。Windows，或本机无法加载 Embedded 原生扩展的 macOS/Linux，请使用 README 中的 Docker Server 步骤。
+1. 在电脑上安装 Python 3.11，并在**仓库根目录**按 [`code/README.md`](https://github.com/datawhalechina/easy-data-x-ai/blob/main/code/README.md) 安装依赖、启动并检查 SeekDB。Windows，或本机无法加载 Embedded 原生扩展的 macOS/Linux，请使用 README 中的 Docker Server 步骤。
 2. D2 示例默认使用本地 Embedded 数据库；使用 Server 时，按 README 配置 `SEEKDB_MODE`、`SEEKDB_HOST`、`SEEKDB_PORT` 和 `SEEKDB_DATABASE`。若本地用户没有专用演示库，请先按 README 建立隔离库。不要让示例连接生产库或共享库。
 3. 在 Server 模式中，只有确认 `SEEKDB_DATABASE` 指向隔离演示库后，才设置 `SEEKDB_ALLOW_DESTRUCTIVE=1`。`d2_1_ingest.py` 会重建 `d2_knowledge_base` 集合；不要对含有其他数据的数据库运行。
 
