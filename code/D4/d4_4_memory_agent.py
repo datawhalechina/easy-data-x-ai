@@ -216,7 +216,7 @@ def recall_memory(query: str, top_k: int = 5, *, collection=None) -> list[str]:
     ):
         # 时效性权重：30天半衰期的指数衰减
         age_days = (current_time - meta["created_at"]) / 86400
-        weight = math.exp(-age_days / 30) + meta.get("access_count", 0) * 0.1
+        weight = math.exp2(-age_days / 30) + meta.get("access_count", 0) * 0.1
         weighted.append((doc, weight))
         updated_metadata = dict(meta)
         updated_metadata["access_count"] = meta.get("access_count", 0) + 1

@@ -29,7 +29,9 @@ class CleanupLifecycleTests(unittest.TestCase):
         # 已归档记忆不重复归档，也不能在满 90 天前硬删。
         self.assertEqual(self.clean(89)["actions"], [])
         self.assertIn(memory.id, self.store.records)
-        self.assertEqual(self.clean(90)["deleted"], 1)
+        self.assertEqual(self.clean(90)["actions"], [])
+        self.assertIn(memory.id, self.store.records)
+        self.assertEqual(self.clean(100)["deleted"], 1)
         for collection in (
             self.store.records, self.store.archive,
             self.store.vector_index, self.store.cache,

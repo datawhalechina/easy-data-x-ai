@@ -196,7 +196,7 @@ def relevance(content: str, keywords: list[str]) -> float:
 
 def calc_retention(age_days: int, access_count: int, half_life_days: float = 30.0) -> float:
     """简化版时效权重：越新、被访问越多，保留率越高"""
-    recency = math.exp(-age_days / half_life_days)
+    recency = math.exp2(-age_days / half_life_days)
     bonus = min(0.3, access_count * 0.05)
     return max(0.0, min(1.0, recency + bonus))
 

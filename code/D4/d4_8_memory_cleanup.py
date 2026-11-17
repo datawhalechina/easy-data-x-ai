@@ -123,12 +123,12 @@ class LifecycleMemoryStore:
 # ---------- 2. 保留率与清理作业（对齐课程伪代码）----------
 
 def calc_retention(mem: MemoryItem, now: datetime, half_life_days: float = 30.0) -> float:
-    """R ≈ exp(-age/half_life) + 访问强化，裁剪到 [0, 1]"""
+    """Half-life decay plus access reinforcement, clamped to [0, 1]."""
     age_days = max(0.0, (now - mem.created_at).total_seconds() / 86400)
     idle_boost_anchor = mem.last_accessed_at
     idle_days = max(0.0, (now - idle_boost_anchor).total_seconds() / 86400)
     # 用“距上次访问”更贴近遗忘曲线：长期不用则更快掉
-    recency = math.exp(-idle_days / half_life_days)
+    recency = math.exp2(-idle_days / half_life_days)
     bonus = min(0.25, mem.access_count * 0.04)
     # created 很久但最近刚访问过时，recency 仍然高
     _ = age_days  # 保留字段便于后续扩展写入龄期策略
