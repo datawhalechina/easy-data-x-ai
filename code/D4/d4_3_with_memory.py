@@ -225,7 +225,7 @@ def search_memory(query: str, top_k: int = 5, *, collection=None) -> list[str]:
         # 计算时效性权重（艾宾浩斯遗忘曲线简化版）
         # 记忆越新、被访问次数越多，权重越高
         age_days = (current_time - metadata["created_at"]) / 86400
-        recency_weight = math.exp(-age_days / 30)  # 30天半衰期
+        recency_weight = math.exp2(-age_days / 30)  # Thirty-day half-life.
         access_bonus = metadata.get("access_count", 0) * 0.1  # 每次访问加分
         weight = recency_weight + access_bonus
 
